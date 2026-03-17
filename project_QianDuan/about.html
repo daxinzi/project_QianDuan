@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>关于 - 墨韵写作平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #c9a227;
+            --bg-color: #f5f1e8;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #6b7c8a;
+            --border-color: #e0d8c8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3d566e 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .logo h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-color);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .write-btn {
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b44a 100%);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all 0.3s;
+        }
+
+        .write-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b44a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .logout-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .hero-section {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3d566e 100%);
+            padding: 80px 20px;
+            text-align: center;
+            color: white;
+        }
+
+        .hero-section h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 48px;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+        }
+
+        .hero-section p {
+            font-size: 18px;
+            opacity: 0.9;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .content-section {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+
+        .about-card {
+            background: white;
+            padding: 48px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 40px;
+        }
+
+        .about-card h2 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .about-card h2::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: var(--accent-color);
+            border-radius: 2px;
+        }
+
+        .about-card p {
+            font-size: 16px;
+            color: var(--text-secondary);
+            line-height: 2;
+            margin-bottom: 16px;
+        }
+
+        .values-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .value-item {
+            text-align: center;
+            padding: 32px 24px;
+            background: var(--bg-color);
+            border-radius: 12px;
+        }
+
+        .value-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 20px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.08);
+        }
+
+        .value-icon svg {
+            width: 32px;
+            height: 32px;
+            fill: var(--accent-color);
+        }
+
+        .value-item h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+        }
+
+        .value-item p {
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 24px;
+            margin-top: 32px;
+        }
+
+        .team-member {
+            text-align: center;
+        }
+
+        .team-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+            font-weight: 600;
+            color: white;
+        }
+
+        .team-member h3 {
+            font-size: 18px;
+            margin-bottom: 4px;
+        }
+
+        .team-member .role {
+            font-size: 14px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .team-member .intro {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .timeline {
+            margin-top: 32px;
+            position: relative;
+            padding-left: 32px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 8px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-bottom: 32px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -28px;
+            top: 4px;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-color);
+            border-radius: 50%;
+        }
+
+        .timeline-item h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+
+        .timeline-item .time {
+            font-size: 14px;
+            color: var(--accent-color);
+            margin-bottom: 8px;
+        }
+
+        .timeline-item p {
+            font-size: 15px;
+            margin: 0;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3d566e 100%);
+            border-radius: 16px;
+            padding: 48px;
+            color: white;
+            text-align: center;
+        }
+
+        .contact-card h2 {
+            color: white;
+        }
+
+        .contact-card h2::before {
+            background: white;
+        }
+
+        .contact-card p {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .contact-methods {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            margin-top: 32px;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+        }
+
+        .contact-item svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .contact-item span {
+            font-size: 15px;
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        footer p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .about-card {
+            opacity: 0;
+            animation: fadeInUp 0.5s ease forwards;
+        }
+
+        .about-card:nth-child(1) { animation-delay: 0.1s; }
+        .about-card:nth-child(2) { animation-delay: 0.2s; }
+        .about-card:nth-child(3) { animation-delay: 0.3s; }
+        .about-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+            </div>
+            <h1>墨 韵</h1>
+        </a>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="articles.html">文章</a>
+            <a href="writers.html">作家</a>
+            <a href="about.html" class="active">关于</a>
+        </nav>
+        <div class="user-menu">
+            <a href="write.html" class="write-btn">写文章</a>
+            <div class="user-avatar">M</div>
+            <button class="logout-btn" onclick="handleLogout()">退出</button>
+        </div>
+    </header>
+
+    <section class="hero-section">
+        <h1>关于墨韵</h1>
+        <p>让文字找到它的归属，让思想碰撞火花</p>
+    </section>
+
+    <div class="content-section">
+        <div class="about-card">
+            <h2>关于我们</h2>
+            <p>墨韵是一个专注于文字创作的平台，由一群热爱文字的人于 2024 年创立。我们相信，文字是思想的载体，是情感的桥梁。每一个热爱写作的人，都值得拥有一个能够安心创作、分享、交流的空间。</p>
+            <p>在墨韵，你可以自由地书写自己的故事，分享独特的见解，结识志同道合的作家。我们致力于打造一个纯粹、优雅、有温度的写作社区，让文字找到它的归属。</p>
+        </div>
+
+        <div class="about-card">
+            <h2>我们的理念</h2>
+            <div class="values-grid">
+                <div class="value-item">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                    </div>
+                    <h3>热爱</h3>
+                    <p>因为热爱，所以我们用心</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                    </div>
+                    <h3>品质</h3>
+                    <p>追求极致的用户体验</p>
+                </div>
+                <div class="value-item">
+                    <div class="value-icon">
+                        <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                    </div>
+                    <h3>社区</h3>
+                    <p>连接每一位创作者</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-card">
+            <h2>发展历程</h2>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <h3>产品正式上线</h3>
+                    <div class="time">2024 年 6 月</div>
+                    <p>墨韵写作平台正式发布上线，开始为创作者提供服务。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>用户突破 10 万</h3>
+                    <div class="time">2024 年 12 月</div>
+                    <p>平台注册用户突破 10 万，作家社区初具规模。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>移动端上线</h3>
+                    <div class="time">2025 年 3 月</div>
+                    <p>推出 iOS 和 Android 移动端应用，随时随地创作。</p>
+                </div>
+                <div class="timeline-item">
+                    <h3>持续成长中</h3>
+                    <div class="time">2026 年</div>
+                    <p>目前平台已有超过 50 万注册用户，活跃作家超过 10 万。</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="about-card">
+            <h2>核心团队</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-avatar" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">墨</div>
+                    <h3>创始人 A</h3>
+                    <p class="role">CEO & 联合创始人</p>
+                    <p class="intro">前大厂产品经理，热爱文字</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">联</div>
+                    <h3>联合创始人 B</h3>
+                    <p class="role">CTO & 技术负责人</p>
+                    <p class="intro">资深工程师，技术大牛</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">运</div>
+                    <h3>运营负责人 C</h3>
+                    <p class="role">运营总监</p>
+                    <p class="intro">资深运营，擅长社区运营</p>
+                </div>
+                <div class="team-member">
+                    <div class="team-avatar" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">编</div>
+                    <h3>内容主编 D</h3>
+                    <p class="role">内容总监</p>
+                    <p class="intro">资深编辑，文字爱好者</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="contact-card">
+            <h2>联系我们</h2>
+            <p>我们随时倾听您的反馈和建议</p>
+            <div class="contact-methods">
+                <div class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+                    <span>contact@morin.com</span>
+                </div>
+                <div class="contact-item">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+                    <span>北京市朝阳区</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 墨韵写作平台. 让文字找到它的归属.</p>
+    </footer>
+
+    <script>
+        function handleLogout() {
+            if (confirm('确定要退出登录吗？')) {
+                window.location.href = 'login.html';
+            }
+        }
+    </script>
+</body>
+</html>
