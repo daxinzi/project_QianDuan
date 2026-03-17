@@ -840,53 +840,156 @@
     <div class="toast" id="toast"></div>
 
     <script>
+        // IndexedDB 数据库封装
+        const DB_NAME = 'WritingSpaceDB';
+        const DB_VERSION = 1;
+        const STORE_USERS = 'users';
+        const STORE_ARTICLES = 'articles';
+
+        class Database {
+            constructor() { this.db = null; }
+
+            async open() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => { this.db = request.result; resolve(this.db); };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(STORE_USERS)) {
+                            const userStore = db.createObjectStore(STORE_USERS, { keyPath: 'id', autoIncrement: true });
+                            userStore.createIndex('email', 'email', { unique: true });
+                            userStore.createIndex('username', 'username', { unique: false });
+                        }
+                        if (!db.objectStoreNames.contains(STORE_ARTICLES)) {
+                            const articleStore = db.createObjectStore(STORE_ARTICLES, { keyPath: 'id', autoIncrement: true });
+                            articleStore.createIndex('authorId', 'authorId', { unique: false });
+                            articleStore.createIndex('status', 'status', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async getAll(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async getById(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.get(id);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async getByIndex(storeName, indexName, value) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const index = store.index(indexName);
+                    const request = index.get(value);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async add(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.add(data);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async put(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.put(data);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async delete(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.delete(id);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+        }
+
+        const db = new Database();
+        let dbInitialized = false;
+
+        async function initDatabase() {
+            if (dbInitialized) return;
+            try {
+                await db.open();
+                dbInitialized = true;
+                
+                // 初始化默认用户数据
+                const users = await db.getAll(STORE_USERS);
+                if (users.length === 0) {
+                    await db.add(STORE_USERS, {
+                        username: '管理员', email: 'admin@example.com', password: 'admin123',
+                        avatar: '管', role: 'admin', articles: 0, status: 'normal', date: '2024-01-01'
+                    });
+                    await db.add(STORE_USERS, {
+                        username: '林间风声', email: 'lin@example.com', password: '123456',
+                        avatar: '林', role: 'user', articles: 12, status: 'normal', date: '2024-01-15'
+                    });
+                    await db.add(STORE_USERS, {
+                        username: '墨染流年', email: 'mo@example.com', password: '123456',
+                        avatar: '墨', role: 'user', articles: 8, status: 'normal', date: '2024-02-20'
+                    });
+                    await db.add(STORE_USERS, {
+                        username: '静水流深', email: 'jing@example.com', password: '123456',
+                        avatar: '静', role: 'user', articles: 23, status: 'normal', date: '2024-01-08'
+                    });
+                }
+            } catch (error) {
+                console.error('数据库初始化失败:', error);
+            }
+        }
+
         // 用户管理函数
-        function getUsers() {
-            const users = localStorage.getItem('users');
-            return users ? JSON.parse(users) : [];
+        async function getUsers() {
+            await initDatabase();
+            return await db.getAll(STORE_USERS);
         }
 
-        function saveUsers(users) {
-            localStorage.setItem('users', JSON.stringify(users));
+        async function addUser(user) {
+            await initDatabase();
+            return await db.add(STORE_USERS, user);
         }
 
-        function addUser(user) {
-            const users = getUsers();
-            users.push(user);
-            saveUsers(users);
-        }
-
-        function updateUser(id, data) {
-            const users = getUsers();
-            const index = users.findIndex(u => u.id === id);
-            if (index !== -1) {
-                users[index] = { ...users[index], ...data };
-                saveUsers(users);
+        async function updateUser(id, data) {
+            await initDatabase();
+            const user = await db.getById(STORE_USERS, id);
+            if (user) {
+                await db.put(STORE_USERS, { ...user, ...data });
             }
         }
 
-        function deleteUser(id) {
-            const users = getUsers();
-            const filtered = users.filter(u => u.id !== id);
-            saveUsers(filtered);
+        async function deleteUser(id) {
+            await initDatabase();
+            await db.delete(STORE_USERS, id);
         }
-
-        // 初始化默认用户数据
-        function initDefaultUsers() {
-            const users = getUsers();
-            if (users.length === 0) {
-                const defaultUsers = [
-                    { id: 1, username: '林间风声', email: 'lin@example.com', password: '123456', avatar: '林', articles: 12, status: 'normal', date: '2024-01-15' },
-                    { id: 2, username: '墨染流年', email: 'mo@example.com', password: '123456', avatar: '墨', articles: 8, status: 'normal', date: '2024-02-20' },
-                    { id: 3, username: '静水流深', email: 'jing@example.com', password: '123456', avatar: '静', articles: 23, status: 'normal', date: '2024-01-08' },
-                    { id: 4, username: '时光笔记', email: 'shi@example.com', password: '123456', avatar: '时', articles: 5, status: 'warning', date: '2024-03-01' },
-                    { id: 5, username: '秋水文章', email: 'qiu@example.com', password: '123456', avatar: '秋', articles: 0, status: 'danger', date: '2024-03-10' },
-                ];
-                saveUsers(defaultUsers);
-            }
-        }
-
-        initDefaultUsers();
 
         // 模拟文章数据
         const articles = [
@@ -930,8 +1033,8 @@
         const pageData = {
             dashboard: {
                 title: '控制台',
-                render: () => {
-                    const users = getUsers();
+                render: async () => {
+                    const users = await getUsers();
                     return `
                     <div class="stats-grid">
                         <div class="stat-card">
@@ -1072,8 +1175,8 @@
             },
             users: {
                 title: '用户管理',
-                render: () => {
-                    const users = getUsers();
+                render: async () => {
+                    const users = await getUsers();
                     return `
                     <div class="data-card">
                         <div class="data-card-header">
@@ -1257,14 +1360,14 @@
         };
 
         // 页面切换
-        function switchPage(page) {
+        async function switchPage(page) {
             document.querySelectorAll('.menu-item').forEach(item => {
                 item.classList.toggle('active', item.dataset.page === page);
             });
             
             const data = pageData[page];
             document.getElementById('page-title').textContent = data.title;
-            document.getElementById('content').innerHTML = data.render();
+            document.getElementById('content').innerHTML = await data.render();
             
             // 绑定用户管理事件
             if (page === 'users') {
@@ -1360,7 +1463,7 @@
             });
 
             // 弹窗确认按钮
-            document.getElementById('modal-confirm').onclick = () => {
+            document.getElementById('modal-confirm').onclick = async () => {
                 const username = document.getElementById('user-username')?.value;
                 const email = document.getElementById('user-email')?.value;
                 const password = document.getElementById('user-password')?.value;
@@ -1372,14 +1475,13 @@
                 }
 
                 if (modalMode === 'add') {
-                    const users = getUsers();
+                    const users = await getUsers();
                     if (users.some(u => u.email === email)) {
                         showToast('该邮箱已被注册', 'error');
                         return;
                     }
                     
                     const newUser = {
-                        id: Date.now(),
                         username: username,
                         email: email,
                         password: password || '123456',
@@ -1388,7 +1490,7 @@
                         status: status,
                         date: new Date().toISOString().split('T')[0]
                     };
-                    addUser(newUser);
+                    await addUser(newUser);
                     showToast('用户添加成功', 'success');
                 } else if (modalMode === 'edit' && editingUserId) {
                     const updateData = {
@@ -1399,12 +1501,12 @@
                     if (password) {
                         updateData.password = password;
                     }
-                    updateUser(editingUserId, updateData);
+                    await updateUser(editingUserId, updateData);
                     showToast('用户更新成功', 'success');
                 }
 
                 hideModal();
-                switchPage('users');
+                await switchPage('users');
             };
         }
 

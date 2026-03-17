@@ -21,11 +21,7 @@
             --transition: all 0.3s ease;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Noto Sans SC', sans-serif;
@@ -40,15 +36,9 @@
                 radial-gradient(ellipse at bottom right, rgba(212, 165, 116, 0.08) 0%, transparent 50%);
         }
 
-        .container {
-            width: 100%;
-            max-width: 420px;
-        }
+        .container { width: 100%; max-width: 420px; }
 
-        .logo {
-            text-align: center;
-            margin-bottom: 32px;
-        }
+        .logo { text-align: center; margin-bottom: 32px; }
 
         .logo-icon {
             width: 64px;
@@ -62,11 +52,7 @@
             box-shadow: 0 4px 12px rgba(139, 115, 85, 0.3);
         }
 
-        .logo-icon svg {
-            width: 36px;
-            height: 36px;
-            fill: white;
-        }
+        .logo-icon svg { width: 36px; height: 36px; fill: white; }
 
         .logo-text {
             font-family: 'Noto Serif SC', serif;
@@ -76,19 +62,13 @@
             letter-spacing: 4px;
         }
 
-        .logo-slogan {
-            font-size: 13px;
-            color: var(--text-secondary);
-            margin-top: 8px;
-            letter-spacing: 2px;
-        }
+        .logo-slogan { font-size: 13px; color: var(--text-secondary); margin-top: 8px; letter-spacing: 2px; }
 
         .card {
             background: var(--card-bg);
             border-radius: 16px;
             box-shadow: var(--shadow);
             overflow: hidden;
-            position: relative;
         }
 
         .card-header {
@@ -123,39 +103,25 @@
             transition: var(--transition);
         }
 
-        .tab-btn.active {
-            color: var(--primary-color);
-        }
+        .tab-btn.active { color: var(--primary-color); }
+        .tab-btn.active::after { transform: scaleX(1); }
+        .tab-btn:hover:not(.active) { color: var(--primary-color); }
 
-        .tab-btn.active::after {
-            transform: scaleX(1);
-        }
-
-        .tab-btn:hover:not(.active) {
-            color: var(--primary-color);
-        }
-
-        .card-body {
-            padding: 24px;
-        }
+        .card-body { padding: 24px; }
 
         .form-section {
             display: none;
             animation: fadeIn 0.3s ease;
         }
 
-        .form-section.active {
-            display: block;
-        }
+        .form-section.active { display: block; }
 
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+        .form-group { margin-bottom: 20px; }
 
         .form-label {
             display: block;
@@ -183,9 +149,7 @@
             box-shadow: 0 0 0 3px rgba(139, 115, 85, 0.1);
         }
 
-        .form-input::placeholder {
-            color: #b8c0c8;
-        }
+        .form-input::placeholder { color: #b8c0c8; }
 
         .form-options {
             display: flex;
@@ -202,9 +166,7 @@
             cursor: pointer;
         }
 
-        .remember-me input {
-            display: none;
-        }
+        .remember-me input { display: none; }
 
         .checkbox-custom {
             width: 18px;
@@ -230,13 +192,8 @@
             transition: var(--transition);
         }
 
-        .remember-me input:checked + .checkbox-custom svg {
-            opacity: 1;
-        }
-
-        .remember-me span {
-            color: var(--text-secondary);
-        }
+        .remember-me input:checked + .checkbox-custom svg { opacity: 1; }
+        .remember-me span { color: var(--text-secondary); }
 
         .forgot-link {
             color: var(--secondary-color);
@@ -244,9 +201,7 @@
             transition: var(--transition);
         }
 
-        .forgot-link:hover {
-            color: var(--accent-color);
-        }
+        .forgot-link:hover { color: var(--accent-color); }
 
         .submit-btn {
             width: 100%;
@@ -266,60 +221,19 @@
             box-shadow: 0 6px 20px rgba(139, 115, 85, 0.4);
         }
 
-        .submit-btn:active {
-            transform: translateY(0);
-        }
+        .password-strength { margin-top: 8px; display: flex; gap: 4px; }
 
-        .divider {
-            display: flex;
-            align-items: center;
-            margin: 24px 0;
-        }
-
-        .divider::before,
-        .divider::after {
-            content: '';
+        .strength-bar {
             flex: 1;
-            height: 1px;
+            height: 4px;
             background: var(--border-color);
-        }
-
-        .divider span {
-            padding: 0 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
-        }
-
-        .social-login {
-            display: flex;
-            gap: 12px;
-        }
-
-        .social-btn {
-            flex: 1;
-            padding: 12px;
-            border: 1px solid var(--border-color);
-            border-radius: 10px;
-            background: #fafaf8;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            cursor: pointer;
+            border-radius: 2px;
             transition: var(--transition);
-            font-size: 13px;
-            color: var(--text-secondary);
         }
 
-        .social-btn:hover {
-            border-color: var(--secondary-color);
-            background: #fff;
-        }
-
-        .social-btn svg {
-            width: 18px;
-            height: 18px;
-        }
+        .strength-bar.active.weak { background: #e74c3c; }
+        .strength-bar.active.medium { background: #f39c12; }
+        .strength-bar.active.strong { background: #27ae60; }
 
         .card-footer {
             padding: 16px 24px 24px;
@@ -328,15 +242,8 @@
             color: var(--text-secondary);
         }
 
-        .card-footer a {
-            color: var(--secondary-color);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .card-footer a:hover {
-            text-decoration: underline;
-        }
+        .card-footer a { color: var(--secondary-color); text-decoration: none; font-weight: 500; }
+        .card-footer a:hover { text-decoration: underline; }
 
         .modal-overlay {
             position: fixed;
@@ -350,27 +257,18 @@
             justify-content: center;
             padding: 20px;
             z-index: 1000;
-            opacity: 0;
-            transition: opacity 0.3s ease;
         }
 
-        .modal-overlay.active {
-            display: flex;
-            opacity: 1;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal {
             background: var(--card-bg);
             border-radius: 16px;
             width: 100%;
             max-width: 400px;
-            transform: scale(0.9) translateY(20px);
-            transition: transform 0.3s ease;
         }
 
-        .modal-overlay.active .modal {
-            transform: scale(1) translateY(0);
-        }
+        .modal-overlay.active .modal { transform: scale(1) translateY(0); }
 
         .modal-header {
             padding: 20px 24px;
@@ -400,19 +298,10 @@
             transition: var(--transition);
         }
 
-        .modal-close:hover {
-            background: var(--border-color);
-        }
+        .modal-close:hover { background: var(--border-color); }
+        .modal-close svg { width: 16px; height: 16px; fill: var(--text-secondary); }
 
-        .modal-close svg {
-            width: 16px;
-            height: 16px;
-            fill: var(--text-secondary);
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
+        .modal-body { padding: 24px; }
 
         .modal-footer {
             padding: 0 24px 24px;
@@ -436,28 +325,14 @@
             color: var(--text-secondary);
         }
 
-        .modal-btn-cancel:hover {
-            background: var(--border-color);
-        }
-
         .modal-btn-confirm {
             background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
             border: none;
             color: white;
         }
 
-        .modal-btn-confirm:hover {
-            box-shadow: 0 4px 12px rgba(139, 115, 85, 0.4);
-        }
-
-        .verification-code-group {
-            display: flex;
-            gap: 12px;
-        }
-
-        .verification-code-group .form-input {
-            flex: 1;
-        }
+        .verification-code-group { display: flex; gap: 12px; }
+        .verification-code-group .form-input { flex: 1; }
 
         .send-code-btn {
             padding: 12px 16px;
@@ -471,14 +346,8 @@
             transition: var(--transition);
         }
 
-        .send-code-btn:hover:not(:disabled) {
-            background: var(--border-color);
-        }
-
-        .send-code-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        .send-code-btn:hover:not(:disabled) { background: var(--border-color); }
+        .send-code-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
         .toast {
             position: fixed;
@@ -496,67 +365,16 @@
             transition: all 0.3s ease;
         }
 
-        .toast.show {
-            transform: translateX(-50%) translateY(0);
-            opacity: 1;
-        }
-
-        .toast.success {
-            background: #27ae60;
-        }
-
-        .toast.error {
-            background: #e74c3c;
-        }
-
-        .password-strength {
-            margin-top: 8px;
-            display: flex;
-            gap: 4px;
-        }
-
-        .strength-bar {
-            flex: 1;
-            height: 4px;
-            background: var(--border-color);
-            border-radius: 2px;
-            transition: var(--transition);
-        }
-
-        .strength-bar.active.weak {
-            background: #e74c3c;
-        }
-
-        .strength-bar.active.medium {
-            background: #f39c12;
-        }
-
-        .strength-bar.active.strong {
-            background: #27ae60;
-        }
+        .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+        .toast.success { background: #27ae60; }
+        .toast.error { background: #e74c3c; }
 
         @media (max-width: 480px) {
-            .container {
-                max-width: 100%;
-            }
-
-            .logo-text {
-                font-size: 24px;
-            }
-
-            .card-header {
-                padding: 20px 20px 0;
-            }
-
-            .card-body {
-                padding: 20px;
-            }
-
-            .form-options {
-                flex-direction: column;
-                gap: 12px;
-                align-items: flex-start;
-            }
+            .container { max-width: 100%; }
+            .logo-text { font-size: 24px; }
+            .card-header { padding: 20px 20px 0; }
+            .card-body { padding: 20px; }
+            .form-options { flex-direction: column; gap: 12px; align-items: flex-start; }
         }
     </style>
 </head>
@@ -564,9 +382,7 @@
     <div class="container">
         <div class="logo">
             <div class="logo-icon">
-                <svg viewBox="0 0 24 24">
-                    <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>
-                </svg>
+                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
             </div>
             <div class="logo-text">写作空间</div>
             <div class="logo-slogan">让文字记录思考</div>
@@ -579,7 +395,6 @@
             </div>
 
             <div class="card-body">
-                <!-- 登录表单 -->
                 <div class="form-section active" id="login-form">
                     <div class="form-group">
                         <label class="form-label">邮箱</label>
@@ -602,7 +417,6 @@
                     <button class="submit-btn" id="login-btn">登录</button>
                 </div>
 
-                <!-- 注册表单 -->
                 <div class="form-section" id="register-form">
                     <div class="form-group">
                         <label class="form-label">昵称</label>
@@ -639,7 +453,6 @@
         </div>
     </div>
 
-    <!-- 忘记密码弹窗 -->
     <div class="modal-overlay" id="forgot-modal">
         <div class="modal">
             <div class="modal-header">
@@ -672,11 +485,153 @@
         </div>
     </div>
 
-    <!-- 提示消息 -->
     <div class="toast" id="toast"></div>
 
     <script>
-        // 检查是否已登录，若已登录则跳转到首页
+        // IndexedDB 数据库封装
+        const DB_NAME = 'WritingSpaceDB';
+        const DB_VERSION = 1;
+        const STORE_USERS = 'users';
+        const STORE_ARTICLES = 'articles';
+
+        class Database {
+            constructor() {
+                this.db = null;
+            }
+
+            async open() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => {
+                        this.db = request.result;
+                        resolve(this.db);
+                    };
+
+                    request.onupgradeneeded = (event) => {
+                        const db = event.target.result;
+                        
+                        // 创建用户存储库
+                        if (!db.objectStoreNames.contains(STORE_USERS)) {
+                            const userStore = db.createObjectStore(STORE_USERS, { keyPath: 'id', autoIncrement: true });
+                            userStore.createIndex('email', 'email', { unique: true });
+                            userStore.createIndex('username', 'username', { unique: false });
+                        }
+
+                        // 创建文章存储库
+                        if (!db.objectStoreNames.contains(STORE_ARTICLES)) {
+                            const articleStore = db.createObjectStore(STORE_ARTICLES, { keyPath: 'id', autoIncrement: true });
+                            articleStore.createIndex('authorId', 'authorId', { unique: false });
+                            articleStore.createIndex('status', 'status', { unique: false });
+                        }
+                    };
+                });
+            }
+
+            async getAll(storeName) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.getAll();
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async getByIndex(storeName, indexName, value) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readonly');
+                    const store = transaction.objectStore(storeName);
+                    const index = store.index(indexName);
+                    const request = index.get(value);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async add(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.add(data);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async put(storeName, data) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.put(data);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+
+            async delete(storeName, id) {
+                return new Promise((resolve, reject) => {
+                    const transaction = this.db.transaction(storeName, 'readwrite');
+                    const store = transaction.objectStore(storeName);
+                    const request = store.delete(id);
+                    request.onerror = () => reject(request.error);
+                    request.onsuccess = () => resolve(request.result);
+                });
+            }
+        }
+
+        // 全局数据库实例
+        const db = new Database();
+        let dbInitialized = false;
+
+        // 初始化数据库
+        async function initDatabase() {
+            if (dbInitialized) return;
+            try {
+                await db.open();
+                dbInitialized = true;
+                
+                // 初始化默认用户数据
+                const users = await db.getAll(STORE_USERS);
+                if (users.length === 0) {
+                    await db.add(STORE_USERS, {
+                        username: '管理员',
+                        email: 'admin@example.com',
+                        password: 'admin123',
+                        avatar: '管',
+                        role: 'admin',
+                        articles: 0,
+                        status: 'normal',
+                        date: new Date().toISOString().split('T')[0]
+                    });
+                    await db.add(STORE_USERS, {
+                        username: '林间风声',
+                        email: 'lin@example.com',
+                        password: '123456',
+                        avatar: '林',
+                        role: 'user',
+                        articles: 12,
+                        status: 'normal',
+                        date: '2024-01-15'
+                    });
+                    await db.add(STORE_USERS, {
+                        username: '墨染流年',
+                        email: 'mo@example.com',
+                        password: '123456',
+                        avatar: '墨',
+                        role: 'user',
+                        articles: 8,
+                        status: 'normal',
+                        date: '2024-02-20'
+                    });
+                }
+            } catch (error) {
+                console.error('数据库初始化失败:', error);
+            }
+        }
+
+        // 检查是否已登录
         if (localStorage.getItem('isLoggedIn') === 'true') {
             window.location.href = 'index.html';
         }
@@ -695,15 +650,11 @@
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const tab = btn.dataset.tab;
-                
                 tabBtns.forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
-                
                 formSections.forEach(section => {
                     section.classList.remove('active');
-                    if (section.id === `${tab}-form`) {
-                        section.classList.add('active');
-                    }
+                    if (section.id === `${tab}-form`) section.classList.add('active');
                 });
             });
         });
@@ -720,7 +671,6 @@
         registerPassword.addEventListener('input', () => {
             const password = registerPassword.value;
             let strength = 0;
-            
             if (password.length >= 8) strength++;
             if (password.length >= 12) strength++;
             if (/[a-z]/.test(password) && /[A-Z]/.test(password)) strength++;
@@ -740,27 +690,11 @@
         // 弹窗控制
         const forgotModal = document.getElementById('forgot-modal');
         const forgotLink = document.getElementById('forgot-password-link');
-        const modalClose = document.getElementById('modal-close');
-        const modalCancel = document.getElementById('modal-cancel');
 
-        forgotLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            forgotModal.classList.add('active');
-        });
-
-        modalClose.addEventListener('click', () => {
-            forgotModal.classList.remove('active');
-        });
-
-        modalCancel.addEventListener('click', () => {
-            forgotModal.classList.remove('active');
-        });
-
-        forgotModal.addEventListener('click', (e) => {
-            if (e.target === forgotModal) {
-                forgotModal.classList.remove('active');
-            }
-        });
+        forgotLink.addEventListener('click', (e) => { e.preventDefault(); forgotModal.classList.add('active'); });
+        document.getElementById('modal-close').addEventListener('click', () => forgotModal.classList.remove('active'));
+        document.getElementById('modal-cancel').addEventListener('click', () => forgotModal.classList.remove('active'));
+        forgotModal.addEventListener('click', (e) => { if (e.target === forgotModal) forgotModal.classList.remove('active'); });
 
         // 发送验证码倒计时
         const sendCodeBtn = document.getElementById('send-code-btn');
@@ -768,193 +702,146 @@
 
         sendCodeBtn.addEventListener('click', () => {
             const email = document.getElementById('forgot-email').value;
-            
-            if (!email) {
-                showToast('请输入邮箱地址', 'error');
-                return;
-            }
-            
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('请输入有效的邮箱地址', 'error');
-                return;
-            }
+            if (!email) { showToast('请输入邮箱地址', 'error'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('请输入有效的邮箱地址', 'error'); return; }
 
             countdown = 60;
             sendCodeBtn.disabled = true;
-            
             const timer = setInterval(() => {
                 countdown--;
                 sendCodeBtn.textContent = `${countdown}秒后重发`;
-                
                 if (countdown <= 0) {
                     clearInterval(timer);
                     sendCodeBtn.disabled = false;
                     sendCodeBtn.textContent = '发送验证码';
                 }
             }, 1000);
-
-            showToast('验证码已发送到您的邮箱', 'success');
+            showToast('验证码已发送到您的邮箱（模拟）', 'success');
         });
 
-        // Toast 提示
+        // Toast
         function showToast(message, type = '') {
             const toast = document.getElementById('toast');
             toast.textContent = message;
             toast.className = 'toast ' + type;
-            
-            setTimeout(() => {
-                toast.classList.add('show');
-            }, 10);
-            
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
         // 登录
-        document.getElementById('login-btn').addEventListener('click', () => {
+        document.getElementById('login-btn').addEventListener('click', async () => {
             const email = document.getElementById('login-email').value;
             const password = document.getElementById('login-password').value;
             const remember = document.getElementById('remember-me').checked;
 
-            if (!email || !password) {
-                showToast('请填写完整信息', 'error');
-                return;
-            }
+            if (!email || !password) { showToast('请填写完整信息', 'error'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('请输入有效的邮箱地址', 'error'); return; }
 
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('请输入有效的邮箱地址', 'error');
-                return;
-            }
-
-            // 从 localStorage 获取用户数据进行验证
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            const user = users.find(u => u.email === email && u.password === password);
+            await initDatabase();
             
-            if (!user) {
-                showToast('邮箱或密码错误', 'error');
-                return;
-            }
+            try {
+                const user = await db.getByIndex(STORE_USERS, 'email', email);
+                if (!user || user.password !== password) {
+                    showToast('邮箱或密码错误', 'error');
+                    return;
+                }
+                if (user.status === 'disabled') {
+                    showToast('账号已被禁用', 'error');
+                    return;
+                }
 
-            if (user.status === 'disabled') {
-                showToast('账号已被禁用', 'error');
-                return;
-            }
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userInfo', JSON.stringify({
+                    id: user.id,
+                    username: user.username,
+                    email: user.email,
+                    role: user.role
+                }));
 
-            // 保存登录状态
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userInfo', JSON.stringify({
-                id: user.id,
-                username: user.username,
-                email: user.email
-            }));
-            
-            // 记住密码功能
-            if (remember) {
-                localStorage.setItem('rememberedEmail', email);
-            } else {
-                localStorage.removeItem('rememberedEmail');
-            }
+                if (remember) localStorage.setItem('rememberedEmail', email);
+                else localStorage.removeItem('rememberedEmail');
 
-            showToast('登录成功！欢迎回来~', 'success');
-            
-            // 跳转到首页
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1000);
+                showToast('登录成功！欢迎回来~', 'success');
+                setTimeout(() => window.location.href = 'index.html', 1000);
+            } catch (error) {
+                showToast('登录失败: ' + error.message, 'error');
+            }
         });
 
         // 注册
-        document.getElementById('register-btn').addEventListener('click', () => {
+        document.getElementById('register-btn').addEventListener('click', async () => {
             const username = document.getElementById('register-username').value;
             const email = document.getElementById('register-email').value;
             const password = document.getElementById('register-password').value;
             const confirmPassword = document.getElementById('register-confirm-password').value;
 
-            if (!username || !email || !password || !confirmPassword) {
-                showToast('请填写完整信息', 'error');
-                return;
+            if (!username || !email || !password || !confirmPassword) { showToast('请填写完整信息', 'error'); return; }
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showToast('请输入有效的邮箱地址', 'error'); return; }
+            if (password.length < 8) { showToast('密码长度至少8位', 'error'); return; }
+            if (password !== confirmPassword) { showToast('两次密码输入不一致', 'error'); return; }
+
+            await initDatabase();
+
+            try {
+                const existingUser = await db.getByIndex(STORE_USERS, 'email', email);
+                if (existingUser) {
+                    showToast('该邮箱已被注册', 'error');
+                    return;
+                }
+
+                const newUser = {
+                    username: username,
+                    email: email,
+                    password: password,
+                    avatar: username.charAt(0).toUpperCase(),
+                    role: 'user',
+                    articles: 0,
+                    status: 'normal',
+                    date: new Date().toISOString().split('T')[0]
+                };
+
+                await db.add(STORE_USERS, newUser);
+
+                localStorage.setItem('isLoggedIn', 'true');
+                localStorage.setItem('userInfo', JSON.stringify({
+                    username: username,
+                    email: email,
+                    role: 'user'
+                }));
+
+                showToast('注册成功！即将进入首页~', 'success');
+                setTimeout(() => window.location.href = 'index.html', 1500);
+            } catch (error) {
+                showToast('注册失败: ' + error.message, 'error');
             }
-
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('请输入有效的邮箱地址', 'error');
-                return;
-            }
-
-            if (password.length < 8) {
-                showToast('密码长度至少8位', 'error');
-                return;
-            }
-
-            if (password !== confirmPassword) {
-                showToast('两次密码输入不一致', 'error');
-                return;
-            }
-
-            // 获取现有用户列表
-            const users = JSON.parse(localStorage.getItem('users') || '[]');
-            
-            // 检查邮箱是否已注册
-            if (users.some(u => u.email === email)) {
-                showToast('该邮箱已被注册', 'error');
-                return;
-            }
-
-            // 创建新用户
-            const newUser = {
-                id: Date.now(),
-                username: username,
-                email: email,
-                password: password,
-                avatar: username.charAt(0).toUpperCase(),
-                articles: 0,
-                status: 'normal',
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            // 保存到用户列表
-            users.push(newUser);
-            localStorage.setItem('users', JSON.stringify(users));
-
-            // 自动登录并保存用户信息
-            localStorage.setItem('isLoggedIn', 'true');
-            localStorage.setItem('userInfo', JSON.stringify({
-                id: newUser.id,
-                username: username,
-                email: email
-            }));
-
-            showToast('注册成功！即将进入首页~', 'success');
-            
-            // 跳转到首页
-            setTimeout(() => {
-                window.location.href = 'index.html';
-            }, 1500);
         });
 
         // 重置密码
-        document.getElementById('modal-confirm').addEventListener('click', () => {
+        document.getElementById('modal-confirm').addEventListener('click', async () => {
             const email = document.getElementById('forgot-email').value;
             const code = document.getElementById('forgot-code').value;
             const newPassword = document.getElementById('forgot-new-password').value;
 
-            if (!email || !code || !newPassword) {
-                showToast('请填写完整信息', 'error');
-                return;
-            }
+            if (!email || !code || !newPassword) { showToast('请填写完整信息', 'error'); return; }
+            if (newPassword.length < 8) { showToast('密码长度至少8位', 'error'); return; }
 
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showToast('请输入有效的邮箱地址', 'error');
-                return;
-            }
+            await initDatabase();
 
-            if (newPassword.length < 8) {
-                showToast('密码长度至少8位', 'error');
-                return;
-            }
+            try {
+                const user = await db.getByIndex(STORE_USERS, 'email', email);
+                if (!user) {
+                    showToast('该邮箱未注册', 'error');
+                    return;
+                }
 
-            showToast('密码重置成功！请使用新密码登录', 'success');
-            forgotModal.classList.remove('active');
+                user.password = newPassword;
+                await db.put(STORE_USERS, user);
+
+                showToast('密码重置成功！请使用新密码登录', 'success');
+                forgotModal.classList.remove('active');
+            } catch (error) {
+                showToast('密码重置失败: ' + error.message, 'error');
+            }
         });
 
         // 回车键提交
@@ -962,11 +849,8 @@
             input.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const form = input.closest('.form-section');
-                    if (form.id === 'login-form') {
-                        document.getElementById('login-btn').click();
-                    } else if (form.id === 'register-form') {
-                        document.getElementById('register-btn').click();
-                    }
+                    if (form.id === 'login-form') document.getElementById('login-btn').click();
+                    else if (form.id === 'register-form') document.getElementById('register-btn').click();
                 }
             });
         });
