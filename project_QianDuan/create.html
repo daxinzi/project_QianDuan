@@ -38,7 +38,7 @@
         }
 
         .navbar-inner {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 0 24px;
             height: 64px;
@@ -113,10 +113,171 @@
             transform: translateY(-1px);
         }
 
-        .editor-container {
-            max-width: 900px;
+        .editor-wrapper {
+            display: flex;
+            max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 24px;
+            min-height: calc(100vh - 64px);
+        }
+
+        /* 章节侧边栏 */
+        .chapter-sidebar {
+            width: 280px;
+            background: var(--card-bg);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .chapter-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chapter-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .add-chapter-btn {
+            width: 28px;
+            height: 28px;
+            border: none;
+            background: var(--bg-color);
+            border-radius: 6px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .add-chapter-btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .add-chapter-btn svg {
+            width: 18px;
+            height: 18px;
+            fill: var(--text-secondary);
+        }
+
+        .add-chapter-btn:hover svg {
+            fill: white;
+        }
+
+        .chapter-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .chapter-item {
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: var(--transition);
+        }
+
+        .chapter-item:hover {
+            background: var(--bg-color);
+        }
+
+        .chapter-item.active {
+            background: linear-gradient(135deg, rgba(139, 115, 85, 0.1), rgba(212, 165, 116, 0.1));
+            border: 1px solid var(--accent-color);
+        }
+
+        .chapter-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .chapter-name {
+            font-size: 14px;
+            color: var(--primary-color);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .chapter-name-input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-size: 14px;
+            color: var(--primary-color);
+            outline: none;
+            padding: 0;
+        }
+
+        .chapter-word-count {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .chapter-actions {
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .chapter-item:hover .chapter-actions {
+            opacity: 1;
+        }
+
+        .chapter-action-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            background: transparent;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: var(--transition);
+        }
+
+        .chapter-action-btn:hover {
+            background: var(--border-color);
+        }
+
+        .chapter-action-btn svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-secondary);
+        }
+
+        .chapter-action-btn.delete:hover {
+            background: #fee;
+        }
+
+        .chapter-action-btn.delete:hover svg {
+            fill: #e74c3c;
+        }
+
+        /* 编辑区 */
+        .editor-main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+        }
+
+        .editor-container {
+            max-width: 800px;
+            margin: 0 auto;
         }
 
         .editor-title-input {
@@ -207,12 +368,35 @@
             margin: 6px 8px;
         }
 
-        .editor-content {
-            min-height: 500px;
-            padding: 24px;
+        .chapter-content-wrapper {
             background: var(--card-bg);
             border-radius: 16px;
             box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .chapter-content-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .current-chapter-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .current-chapter-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--secondary-color);
+        }
+
+        .editor-content {
+            min-height: 400px;
+            padding: 24px;
             font-family: 'Noto Serif', 'Noto Serif SC', serif;
             font-size: 17px;
             line-height: 1.8;
@@ -221,7 +405,7 @@
         }
 
         .editor-content:empty::before {
-            content: '开始书写你的故事...';
+            content: '开始书写这一章...';
             color: #c8ccd0;
         }
 
@@ -244,9 +428,10 @@
 
         .word-count {
             text-align: right;
-            padding: 16px;
+            padding: 16px 20px;
             color: var(--text-secondary);
             font-size: 13px;
+            border-top: 1px solid var(--border-color);
         }
 
         .auto-save {
@@ -261,6 +446,7 @@
             color: var(--text-secondary);
             opacity: 0;
             transition: var(--transition);
+            z-index: 100;
         }
 
         .auto-save.show {
@@ -367,10 +553,21 @@
         .toast.success { background: #27ae60; }
         .toast.error { background: #e74c3c; }
 
+        @media (max-width: 1024px) {
+            .chapter-sidebar {
+                width: 240px;
+            }
+        }
+
         @media (max-width: 768px) {
             .navbar-inner { padding: 0 16px; }
             .nav-logo-text { display: none; }
-            .editor-container { padding: 24px 16px; }
+            .chapter-sidebar {
+                display: none;
+            }
+            .editor-main {
+                padding: 24px 16px;
+            }
             .editor-title-input { font-size: 24px; }
         }
     </style>
@@ -391,59 +588,81 @@
         </div>
     </nav>
 
-    <div class="editor-container">
-        <input type="text" class="editor-title-input" id="article-title" placeholder="请输入标题..." maxlength="100">
-        
-        <div class="editor-meta">
-            <select class="meta-select" id="article-category">
-                <option value="">选择分类</option>
-                <option value="随笔">随笔</option>
-                <option value="读书笔记">读书笔记</option>
-                <option value="技巧分享">技巧分享</option>
-                <option value="生活">生活</option>
-                <option value="其他">其他</option>
-            </select>
-            <select class="meta-select" id="article-status">
-                <option value="public">公开</option>
-                <option value="private">私密</option>
-            </select>
-        </div>
+    <div class="editor-wrapper">
+        <!-- 章节侧边栏 -->
+        <aside class="chapter-sidebar">
+            <div class="chapter-header">
+                <span class="chapter-title">章节</span>
+                <button class="add-chapter-btn" id="add-chapter" title="添加章节">
+                    <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+                </button>
+            </div>
+            <div class="chapter-list" id="chapter-list">
+            </div>
+        </aside>
 
-        <div class="editor-toolbar">
-            <button class="toolbar-btn" data-command="bold" title="粗体">
-                <svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
-            </button>
-            <button class="toolbar-btn" data-command="italic" title="斜体">
-                <svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
-            </button>
-            <button class="toolbar-btn" data-command="underline" title="下划线">
-                <svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
-            </button>
-            <div class="toolbar-divider"></div>
-            <button class="toolbar-btn" data-command="insertUnorderedList" title="无序列表">
-                <svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
-            </button>
-            <button class="toolbar-btn" data-command="insertOrderedList" title="有序列表">
-                <svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
-            </button>
-            <div class="toolbar-divider"></div>
-            <button class="toolbar-btn" data-command="formatBlock" data-value="blockquote" title="引用">
-                <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
-            </button>
-            <button class="toolbar-btn" data-command="formatBlock" data-value="h2" title="标题">
-                <svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
-            </button>
-            <div class="toolbar-divider"></div>
-            <button class="toolbar-btn" data-command="removeFormat" title="清除格式">
-                <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-            </button>
-        </div>
+        <!-- 编辑区 -->
+        <main class="editor-main">
+            <div class="editor-container">
+                <input type="text" class="editor-title-input" id="article-title" placeholder="请输入标题..." maxlength="100">
+                
+                <div class="editor-meta">
+                    <select class="meta-select" id="article-category">
+                        <option value="">选择分类</option>
+                        <option value="小说">小说</option>
+                        <option value="随笔">随笔</option>
+                        <option value="读书笔记">读书笔记</option>
+                        <option value="技巧分享">技巧分享</option>
+                        <option value="生活">生活</option>
+                    </select>
+                    <select class="meta-select" id="article-status">
+                        <option value="public">公开</option>
+                        <option value="private">私密</option>
+                    </select>
+                </div>
 
-        <div class="editor-content" id="editor-content" contenteditable="true"></div>
+                <div class="editor-toolbar">
+                    <button class="toolbar-btn" data-command="bold" title="粗体">
+                        <svg viewBox="0 0 24 24"><path d="M15.6 10.79c.97-.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09 0 3.71-1.7 3.71-3.79 0-1.52-.86-2.82-2.15-3.42zM10 6.5h3c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5h-3v-3zm3.5 9H10v-3h3.5c.83 0 1.5.67 1.5 1.5s-.67 1.5-1.5 1.5z"/></svg>
+                    </button>
+                    <button class="toolbar-btn" data-command="italic" title="斜体">
+                        <svg viewBox="0 0 24 24"><path d="M10 4v3h2.21l-3.42 8H6v3h8v-3h-2.21l3.42-8H18V4z"/></svg>
+                    </button>
+                    <button class="toolbar-btn" data-command="underline" title="下划线">
+                        <svg viewBox="0 0 24 24"><path d="M12 17c3.31 0 6-2.69 6-6V3h-2.5v8c0 1.93-1.57 3.5-3.5 3.5S8.5 12.93 8.5 11V3H6v8c0 3.31 2.69 6 6 6zm-7 2v2h14v-2H5z"/></svg>
+                    </button>
+                    <div class="toolbar-divider"></div>
+                    <button class="toolbar-btn" data-command="insertUnorderedList" title="无序列表">
+                        <svg viewBox="0 0 24 24"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+                    </button>
+                    <button class="toolbar-btn" data-command="insertOrderedList" title="有序列表">
+                        <svg viewBox="0 0 24 24"><path d="M2 17h2v.5H3v1h1v.5H2v1h3v-4H2v1zm1-9h1V4H2v1h1v3zm-1 3h1.8L2 13.1v.9h3v-1H3.2L5 10.9V10H2v1zm5-6v2h14V5H7zm0 14h14v-2H7v2zm0-6h14v-2H7v2z"/></svg>
+                    </button>
+                    <div class="toolbar-divider"></div>
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="blockquote" title="引用">
+                        <svg viewBox="0 0 24 24"><path d="M6 17h3l2-4V7H5v6h3zm8 0h3l2-4V7h-6v6h3z"/></svg>
+                    </button>
+                    <button class="toolbar-btn" data-command="formatBlock" data-value="h2" title="标题">
+                        <svg viewBox="0 0 24 24"><path d="M5 4v3h5.5v12h3V7H19V4z"/></svg>
+                    </button>
+                    <div class="toolbar-divider"></div>
+                    <button class="toolbar-btn" data-command="removeFormat" title="清除格式">
+                        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+                    </button>
+                </div>
 
-        <div class="word-count">
-            字数：<span id="word-count">0</span>
-        </div>
+                <div class="chapter-content-wrapper">
+                    <div class="chapter-content-header">
+                        <span class="current-chapter-label">当前章节：</span>
+                        <span class="current-chapter-name" id="current-chapter-name">第一章</span>
+                    </div>
+                    <div class="editor-content" id="editor-content" contenteditable="true"></div>
+                    <div class="word-count">
+                        本章字数：<span id="word-count">0</span> · 总字数：<span id="total-word-count">0</span>
+                    </div>
+                </div>
+            </div>
+        </main>
     </div>
 
     <div class="auto-save" id="auto-save">已自动保存</div>
@@ -453,7 +672,7 @@
             <h3 class="modal-title">发布文章</h3>
             <div class="modal-body">
                 <p style="margin-bottom: 12px; color: var(--text-secondary);">确定要发布这篇文章吗？</p>
-                <p style="font-size: 14px; color: var(--text-secondary);">发布后将公开显示在你的文章列表中。</p>
+                <p style="font-size: 14px; color: var(--text-secondary);">共 <span id="publish-chapter-count">1</span> 章，<span id="publish-word-count">0</span> 字</p>
             </div>
             <div class="modal-footer">
                 <button class="modal-btn modal-btn-cancel" id="modal-cancel">取消</button>
@@ -469,29 +688,158 @@
             window.location.href = 'login.html';
         }
 
-        const titleInput = document.getElementById('article-title');
-        const editorContent = document.getElementById('editor-content');
-        const wordCount = document.getElementById('word-count');
-        const autoSave = document.getElementById('auto-save');
+        // 章节数据
+        let chapters = [
+            { id: 1, name: '第一章', content: '' }
+        ];
+        let currentChapterId = 1;
 
-        // 字数统计
-        function updateWordCount() {
-            const text = editorContent.innerText || '';
-            const count = text.replace(/\s/g, '').length;
-            wordCount.textContent = count;
+        // 加载保存的数据
+        function loadSavedData() {
+            const saved = localStorage.getItem('chapterData');
+            if (saved) {
+                const data = JSON.parse(saved);
+                chapters = data.chapters || chapters;
+                currentChapterId = data.currentChapterId || 1;
+                document.getElementById('article-title').value = data.title || '';
+                document.getElementById('article-category').value = data.category || '';
+                document.getElementById('article-status').value = data.status || 'public';
+            }
         }
 
-        editorContent.addEventListener('input', updateWordCount);
+        // 保存数据
+        function saveData() {
+            const data = {
+                chapters: chapters,
+                currentChapterId: currentChapterId,
+                title: document.getElementById('article-title').value,
+                category: document.getElementById('article-category').value,
+                status: document.getElementById('article-status').value
+            };
+            localStorage.setItem('chapterData', JSON.stringify(data));
+        }
+
+        // 渲染章节列表
+        function renderChapterList() {
+            const list = document.getElementById('chapter-list');
+            list.innerHTML = chapters.map(chapter => `
+                <div class="chapter-item ${chapter.id === currentChapterId ? 'active' : ''}" data-id="${chapter.id}">
+                    <div class="chapter-info">
+                        <div class="chapter-name" id="chapter-name-${chapter.id}">${chapter.name}</div>
+                        <div class="chapter-word-count">${countWords(chapter.content)} 字</div>
+                    </div>
+                    <div class="chapter-actions">
+                        <button class="chapter-action-btn rename" data-id="${chapter.id}" title="重命名">
+                            <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                        </button>
+                        <button class="chapter-action-btn delete" data-id="${chapter.id}" title="删除">
+                            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+
+            // 更新当前章节显示
+            const current = chapters.find(c => c.id === currentChapterId);
+            if (current) {
+                document.getElementById('current-chapter-name').textContent = current.name;
+                document.getElementById('editor-content').innerHTML = current.content;
+            }
+
+            updateWordCount();
+        }
+
+        // 字数统计
+        function countWords(text) {
+            return text.replace(/<[^>]*>/g, '').replace(/\s/g, '').length;
+        }
+
+        function updateWordCount() {
+            const current = chapters.find(c => c.id === currentChapterId);
+            const currentCount = current ? countWords(current.content) : 0;
+            const totalCount = chapters.reduce((sum, c) => sum + countWords(c.content), 0);
+            
+            document.getElementById('word-count').textContent = currentCount;
+            document.getElementById('total-word-count').textContent = totalCount;
+        }
+
+        // 添加章节
+        document.getElementById('add-chapter').addEventListener('click', () => {
+            const newId = Math.max(...chapters.map(c => c.id)) + 1;
+            const chapterNum = chapters.length + 1;
+            chapters.push({ id: newId, name: `第${chapterNum}章`, content: '' });
+            currentChapterId = newId;
+            renderChapterList();
+            showToast('已添加新章节');
+            autoSaveDraft();
+        });
+
+        // 章节点击切换
+        document.getElementById('chapter-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.chapter-item');
+            if (item && !e.target.closest('.chapter-action-btn')) {
+                currentChapterId = parseInt(item.dataset.id);
+                renderChapterList();
+            }
+        });
+
+        // 章节重命名
+        document.getElementById('chapter-list').addEventListener('click', (e) => {
+            const renameBtn = e.target.closest('.rename');
+            if (renameBtn) {
+                const id = parseInt(renameBtn.dataset.id);
+                const chapter = chapters.find(c => c.id === id);
+                if (chapter) {
+                    const newName = prompt('请输入章节名称：', chapter.name);
+                    if (newName && newName.trim()) {
+                        chapter.name = newName.trim();
+                        renderChapterList();
+                        autoSaveDraft();
+                    }
+                }
+            }
+        });
+
+        // 删除章节
+        document.getElementById('chapter-list').addEventListener('click', (e) => {
+            const deleteBtn = e.target.closest('.delete');
+            if (deleteBtn) {
+                const id = parseInt(deleteBtn.dataset.id);
+                if (chapters.length <= 1) {
+                    showToast('至少保留一个章节', 'error');
+                    return;
+                }
+                if (confirm('确定要删除这一章吗？')) {
+                    chapters = chapters.filter(c => c.id !== id);
+                    if (currentChapterId === id) {
+                        currentChapterId = chapters[0].id;
+                    }
+                    renderChapterList();
+                    autoSaveDraft();
+                    showToast('章节已删除');
+                }
+            }
+        });
+
+        // 内容编辑
+        const editorContent = document.getElementById('editor-content');
+        
+        editorContent.addEventListener('input', () => {
+            const current = chapters.find(c => c.id === currentChapterId);
+            if (current) {
+                current.content = editorContent.innerHTML;
+            }
+            updateWordCount();
+            autoSaveDraft();
+        });
 
         // 工具栏
         document.querySelectorAll('.toolbar-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const command = btn.dataset.command;
                 const value = btn.dataset.value || null;
-                
                 document.execCommand(command, false, value);
                 editorContent.focus();
-                
                 btn.classList.add('active');
                 setTimeout(() => btn.classList.remove('active'), 200);
             });
@@ -502,39 +850,24 @@
         function autoSaveDraft() {
             clearTimeout(saveTimeout);
             saveTimeout = setTimeout(() => {
-                const draft = {
-                    title: titleInput.value,
-                    content: editorContent.innerHTML,
-                    category: document.getElementById('article-category').value,
-                    status: document.getElementById('article-status').value,
-                    savedAt: new Date().toISOString()
-                };
-                localStorage.setItem('currentDraft', JSON.stringify(draft));
-                
+                saveData();
+                const autoSave = document.getElementById('auto-save');
                 autoSave.classList.add('show');
                 setTimeout(() => autoSave.classList.remove('show'), 2000);
             }, 2000);
         }
 
-        titleInput.addEventListener('input', autoSaveDraft);
-        editorContent.addEventListener('input', autoSaveDraft);
+        document.getElementById('article-title').addEventListener('input', autoSaveDraft);
         document.getElementById('article-category').addEventListener('change', autoSaveDraft);
         document.getElementById('article-status').addEventListener('change', autoSaveDraft);
 
-        // 加载草稿
-        const savedDraft = JSON.parse(localStorage.getItem('currentDraft') || '{}');
-        if (savedDraft.title) titleInput.value = savedDraft.title;
-        if (savedDraft.content) editorContent.innerHTML = savedDraft.content;
-        if (savedDraft.category) document.getElementById('article-category').value = savedDraft.category;
-        if (savedDraft.status) document.getElementById('article-status').value = savedDraft.status;
-        updateWordCount();
-
         // 保存草稿
         document.getElementById('draft-btn').addEventListener('click', () => {
-            if (!titleInput.value) {
+            if (!document.getElementById('article-title').value) {
                 showToast('请输入标题', 'error');
                 return;
             }
+            saveData();
             showToast('草稿已保存');
         });
 
@@ -542,14 +875,17 @@
         const publishModal = document.getElementById('publish-modal');
         
         document.getElementById('publish-btn').addEventListener('click', () => {
-            if (!titleInput.value) {
+            if (!document.getElementById('article-title').value) {
                 showToast('请输入标题', 'error');
                 return;
             }
-            if (!editorContent.innerText.trim()) {
+            const totalWords = chapters.reduce((sum, c) => sum + countWords(c.content), 0);
+            if (totalWords === 0) {
                 showToast('请输入内容', 'error');
                 return;
             }
+            document.getElementById('publish-chapter-count').textContent = chapters.length;
+            document.getElementById('publish-word-count').textContent = totalWords;
             publishModal.classList.add('show');
         });
 
@@ -560,10 +896,7 @@
         document.getElementById('modal-confirm').addEventListener('click', () => {
             publishModal.classList.remove('show');
             showToast('文章发布成功！', 'success');
-            
-            // 清除草稿
-            localStorage.removeItem('currentDraft');
-            
+            localStorage.removeItem('chapterData');
             setTimeout(() => {
                 window.location.href = 'articles.html';
             }, 1500);
@@ -589,12 +922,13 @@
                 if (e.key === 's') {
                     e.preventDefault();
                     document.getElementById('draft-btn').click();
-                } else if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('publish-btn').click();
                 }
             }
         });
+
+        // 初始化
+        loadSavedData();
+        renderChapterList();
     </script>
 </body>
 </html>
