@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>收藏 - 写作空间</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #8b7355;
+            --accent-color: #d4a574;
+            --bg-color: #f5f3ef;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #6b7c8a;
+            --border-color: #e8e4de;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            background-color: var(--bg-color);
+            min-height: 100vh;
+            background-image: 
+                radial-gradient(ellipse at top right, rgba(139, 115, 85, 0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at bottom left, rgba(212, 165, 116, 0.06) 0%, transparent 50%);
+        }
+
+        .navbar {
+            background: var(--card-bg);
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .navbar-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .nav-logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-logo-icon svg {
+            width: 22px;
+            height: 22px;
+            fill: white;
+        }
+
+        .nav-logo-text {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-item {
+            padding: 8px 16px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .nav-item:hover {
+            background: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .nav-item.active {
+            background: var(--bg-color);
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-menu { position: relative; }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .user-avatar:hover { transform: scale(1.05); }
+
+        .user-dropdown {
+            position: absolute;
+            top: calc(100% + 8px);
+            right: 0;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.12);
+            min-width: 180px;
+            padding: 8px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: var(--transition);
+        }
+
+        .user-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            background: none;
+            width: 100%;
+            text-decoration: none;
+        }
+
+        .dropdown-item:hover {
+            background: var(--bg-color);
+            color: var(--primary-color);
+        }
+
+        .dropdown-item svg { width: 18px; height: 18px; }
+        .dropdown-divider { height: 1px; background: var(--border-color); margin: 8px 0; }
+
+        .main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 16px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            background: none;
+            border: none;
+            font-size: 14px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            position: relative;
+            transition: var(--transition);
+        }
+
+        .tab-btn::after {
+            content: '';
+            position: absolute;
+            bottom: -17px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--secondary-color);
+            transform: scaleX(0);
+            transition: var(--transition);
+        }
+
+        .tab-btn.active {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        .tab-btn.active::after {
+            transform: scaleX(1);
+        }
+
+        .collection-list {
+            display: grid;
+            gap: 16px;
+        }
+
+        .collection-item {
+            background: var(--card-bg);
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: var(--shadow);
+            display: flex;
+            gap: 16px;
+            transition: var(--transition);
+        }
+
+        .collection-item:hover {
+            transform: translateX(4px);
+            box-shadow: 0 6px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .collection-avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .collection-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .collection-author {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .collection-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .collection-title:hover {
+            color: var(--secondary-color);
+        }
+
+        .collection-excerpt {
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 12px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .collection-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .collection-info {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .collection-info-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .collection-info-item svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .collection-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            padding: 6px 12px;
+            background: var(--bg-color);
+            border: none;
+            border-radius: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .action-btn:hover {
+            background: var(--border-color);
+            color: var(--primary-color);
+        }
+
+        .action-btn.unlike {
+            color: #e74c3c;
+        }
+
+        .action-btn svg {
+            width: 14px;
+            height: 14px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .empty-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--bg-color);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .empty-icon svg {
+            width: 40px;
+            height: 40px;
+            fill: var(--text-secondary);
+        }
+
+        .empty-title {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .empty-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .empty-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(139, 115, 85, 0.4);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--primary-color);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-size: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            z-index: 2000;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .navbar-inner { padding: 0 16px; }
+            .nav-logo-text { display: none; }
+            .nav-menu { display: none; }
+            .main { padding: 24px 16px; }
+            .collection-item { flex-direction: column; }
+            .collection-avatar { width: 40px; height: 40px; font-size: 14px; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="navbar-inner">
+            <a href="index.html" class="nav-logo">
+                <div class="nav-logo-icon">
+                    <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                </div>
+                <span class="nav-logo-text">写作空间</span>
+            </a>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-item">首页</a>
+                <a href="articles.html" class="nav-item">文章</a>
+                <a href="create.html" class="nav-item">创作</a>
+                <a href="collections.html" class="nav-item active">收藏</a>
+            </div>
+            <div class="nav-actions">
+                <div class="user-menu">
+                    <div class="user-avatar" id="user-avatar"></div>
+                    <div class="user-dropdown" id="user-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                            <span>个人中心</span>
+                        </a>
+                        <a href="profile.html" class="dropdown-item">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.14 12.94c.04-.31.06-.63.06-.94 0-.31-.02-.63-.06-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.04.31-.06.63-.06.94s.02.63.06.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+                            <span>设置</span>
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <div class="dropdown-item" id="logout-btn">
+                            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"/></svg>
+                            <span>退出登录</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main">
+        <div class="page-header">
+            <h1 class="page-title">我的收藏</h1>
+            <p class="page-subtitle">收藏喜欢的文章</p>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="articles">文章收藏</button>
+            <button class="tab-btn" data-tab="authors">关注作者</button>
+        </div>
+
+        <div class="collection-list" id="collection-list">
+        </div>
+    </main>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        if (localStorage.getItem('isLoggedIn') !== 'true') {
+            window.location.href = 'login.html';
+        }
+
+        const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
+        document.getElementById('user-avatar').textContent = userInfo.username ? userInfo.username.charAt(0).toUpperCase() : 'U';
+
+        const collections = [
+            { id: 1, author: '林间风声', avatar: '林', title: '写作是一场与自己的对话', excerpt: '写作不仅是表达，更是一种自我探索的过程。每当我们拿起笔，我们就在与自己对话...', date: '3小时前', views: 2340, likes: 156 },
+            { id: 2, author: '墨染流年', avatar: '墨', title: '如何写出有画面感的文字', excerpt: '好的文字能让读者在脑海中构建出画面。本文分享几种实用的写作技巧...', date: '昨天', views: 1876, likes: 98 },
+            { id: 3, author: '静水流深', avatar: '静', title: '阅读带给我的改变', excerpt: '从开始阅读到爱上阅读，这个过程彻底改变了我的生活和思维方式...', date: '3天前', views: 3456, likes: 234 },
+            { id: 4, author: '时光笔记', avatar: '时', title: '我的读书方法论', excerpt: '读书不是翻书，而是要真正吸收书中的知识。本文分享我的读书方法和心得...', date: '1周前', views: 4521, likes: 312 },
+            { id: 5, author: '秋水文章', avatar: '秋', title: '写给初学写作的人', excerpt: '不要害怕写作，不要追求完美。写作最重要的是开始，然后坚持下去...', date: '2周前', views: 5678, likes: 445 },
+        ];
+
+        function renderCollections() {
+            const list = document.getElementById('collection-list');
+            
+            list.innerHTML = collections.map(item => `
+                <div class="collection-item">
+                    <div class="collection-avatar">${item.avatar}</div>
+                    <div class="collection-content">
+                        <div class="collection-author">${item.author}</div>
+                        <div class="collection-title">${item.title}</div>
+                        <p class="collection-excerpt">${item.excerpt}</p>
+                        <div class="collection-meta">
+                            <div class="collection-info">
+                                <span class="collection-info-item">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                                    ${item.date}
+                                </span>
+                                <span class="collection-info-item">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                    ${item.views}
+                                </span>
+                                <span class="collection-info-item">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    ${item.likes}
+                                </span>
+                            </div>
+                            <div class="collection-actions">
+                                <button class="action-btn" onclick="window.open('articles.html', '_self')">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+                                    阅读
+                                </button>
+                                <button class="action-btn unlike" data-id="${item.id}">
+                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                    取消
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Tab 切换
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                if (btn.dataset.tab === 'authors') {
+                    document.getElementById('collection-list').innerHTML = `
+                        <div class="empty-state">
+                            <div class="empty-icon">
+                                <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+                            </div>
+                            <h3 class="empty-title">暂无关注</h3>
+                            <p class="empty-desc">关注感兴趣的作者，及时获取他们的更新</p>
+                        </div>
+                    `;
+                } else {
+                    renderCollections();
+                }
+            });
+        });
+
+        // 取消收藏
+        document.addEventListener('click', (e) => {
+            const unlikeBtn = e.target.closest('.action-btn.unlike');
+            if (unlikeBtn) {
+                const id = unlikeBtn.dataset.id;
+                unlikeBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> 取消中';
+                setTimeout(() => {
+                    showToast('已取消收藏');
+                    renderCollections();
+                }, 500);
+            }
+        });
+
+        // 用户菜单
+        const userAvatar = document.getElementById('user-avatar');
+        const userDropdown = document.getElementById('user-dropdown');
+        userAvatar.addEventListener('click', () => userDropdown.classList.toggle('show'));
+        document.addEventListener('click', (e) => {
+            if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
+                userDropdown.classList.remove('show');
+            }
+        });
+
+        // 退出登录
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('userInfo');
+            showToast('已退出登录');
+            setTimeout(() => window.location.href = 'login.html', 1000);
+        });
+
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
+        renderCollections();
+    </script>
+</body>
+</html>
