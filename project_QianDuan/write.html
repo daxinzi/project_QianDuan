@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>写文章 - 墨韵写作平台</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #c9a227;
+            --bg-color: #f5f1e8;
+            --card-bg: #ffffff;
+            --text-primary: #2c3e50;
+            --text-secondary: #6b7c8a;
+            --border-color: #e0d8c8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        header {
+            background: white;
+            border-bottom: 1px solid var(--border-color);
+            padding: 16px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, #3d566e 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-icon svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        .logo h1 {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 20px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: var(--primary-color);
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 15px;
+            transition: color 0.3s;
+        }
+
+        nav a:hover, nav a.active {
+            color: var(--accent-color);
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .publish-btn {
+            padding: 8px 24px;
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b44a 100%);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .publish-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(201, 162, 39, 0.3);
+        }
+
+        .draft-btn {
+            padding: 8px 16px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: transparent;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .draft-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent-color) 0%, #d4b44a 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .write-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .article-settings {
+            background: white;
+            padding: 20px 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            margin-bottom: 24px;
+            display: flex;
+            gap: 20px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .setting-item label {
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .setting-item select {
+            padding: 8px 12px;
+            font-size: 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            background: white;
+            color: var(--text-primary);
+            cursor: pointer;
+            outline: none;
+        }
+
+        .setting-item select:focus {
+            border-color: var(--accent-color);
+        }
+
+        .title-input {
+            width: 100%;
+            padding: 16px 0;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 32px;
+            font-weight: 600;
+            border: none;
+            background: transparent;
+            color: var(--text-primary);
+            outline: none;
+            margin-bottom: 24px;
+        }
+
+        .title-input::placeholder {
+            color: #c8cdd2;
+        }
+
+        .editor-toolbar {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-bottom: none;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .toolbar-btn {
+            padding: 6px 10px;
+            font-size: 14px;
+            color: var(--text-secondary);
+            background: transparent;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+
+        .toolbar-btn:hover {
+            background: var(--bg-color);
+            color: var(--text-primary);
+        }
+
+        .toolbar-btn.active {
+            background: var(--accent-color);
+            color: white;
+        }
+
+        .editor-area {
+            min-height: 500px;
+            padding: 24px;
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 0 0 8px 8px;
+            font-size: 17px;
+            line-height: 2;
+            outline: none;
+        }
+
+        .editor-area:focus {
+            border-color: var(--accent-color);
+        }
+
+        .editor-area:empty::before {
+            content: attr(data-placeholder);
+            color: #c8cdd2;
+        }
+
+        .word-count {
+            text-align: right;
+            padding: 12px;
+            font-size: 14px;
+            color: var(--text-secondary);
+        }
+
+        .tip {
+            background: rgba(201, 162, 39, 0.1);
+            border-left: 3px solid var(--accent-color);
+            padding: 16px 20px;
+            margin-bottom: 24px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tip p {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+        }
+
+        .tip p:last-child {
+            margin-bottom: 0;
+        }
+
+        .tip strong {
+            color: var(--accent-color);
+        }
+
+        footer {
+            background: var(--primary-color);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        footer p {
+            font-size: 14px;
+            opacity: 0.8;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .write-container {
+            animation: fadeIn 0.4s ease;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a href="index.html" class="logo">
+            <div class="logo-icon">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H7v-2h7v2zm3-4H7v-2h10v2zm0-4H7V7h10v2z"/>
+                </svg>
+            </div>
+            <h1>墨 韵</h1>
+        </a>
+        <nav>
+            <a href="index.html">首页</a>
+            <a href="articles.html" class="active">文章</a>
+            <a href="#">作家</a>
+            <a href="#">关于</a>
+        </nav>
+        <div class="user-menu">
+            <button class="draft-btn" onclick="saveDraft()">保存草稿</button>
+            <button class="publish-btn" onclick="publishArticle()">发布</button>
+            <div class="user-avatar">M</div>
+        </div>
+    </header>
+
+    <div class="write-container">
+        <div class="tip">
+            <p><strong>写作提示：</strong></p>
+            <p>使用 <strong>#</strong> 输入标题，<strong>##</strong> 输入二级标题</p>
+            <p>使用 <strong>**文字**</strong> 加粗，<strong>*文字*</strong> 斜体</p>
+            <p>按 <strong>Ctrl + S</strong> 快速保存草稿</p>
+        </div>
+
+        <div class="article-settings">
+            <div class="setting-item">
+                <label>分类：</label>
+                <select id="category">
+                    <option value="">选择分类</option>
+                    <option value="tech">技术</option>
+                    <option value="life">生活</option>
+                    <option value="reading">阅读</option>
+                    <option value="writing">写作</option>
+                    <option value="thoughts">随笔</option>
+                </select>
+            </div>
+            <div class="setting-item">
+                <label>标签：</label>
+                <select id="tag">
+                    <option value="">选择标签</option>
+                    <option value="经验">经验</option>
+                    <option value="感悟">感悟</option>
+                    <option value="教程">教程</option>
+                    <option value="分享">分享</option>
+                </select>
+            </div>
+        </div>
+
+        <input type="text" class="title-input" id="articleTitle" placeholder="请输入文章标题...">
+
+        <div class="editor-toolbar">
+            <button class="toolbar-btn" onclick="formatText('bold')" title="加粗"><strong>B</strong></button>
+            <button class="toolbar-btn" onclick="formatText('italic')" title="斜体"><em>I</em></button>
+            <button class="toolbar-btn" onclick="formatText('heading')" title="标题">H</button>
+            <button class="toolbar-btn" onclick="formatText('quote')" title="引用">"</button>
+            <button class="toolbar-btn" onclick="formatText('list')" title="列表">•</button>
+            <button class="toolbar-btn" onclick="formatText('link')" title="链接">🔗</button>
+            <button class="toolbar-btn" onclick="formatText('image')" title="图片">🖼</button>
+        </div>
+
+        <div class="editor-area" id="editor" contenteditable="true" data-placeholder="在这里开始写作..."></div>
+
+        <div class="word-count">
+            字数：<span id="wordCount">0</span> 字
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 墨韵写作平台. 让文字找到它的归属.</p>
+    </footer>
+
+    <script>
+        const editor = document.getElementById('editor');
+        const titleInput = document.getElementById('articleTitle');
+        const wordCountEl = document.getElementById('wordCount');
+
+        // 字数统计
+        editor.addEventListener('input', updateWordCount);
+        titleInput.addEventListener('input', updateWordCount);
+
+        function updateWordCount() {
+            const titleText = titleInput.value.trim();
+            const editorText = editor.innerText || '';
+            const totalText = titleText + ' ' + editorText;
+            const count = totalText.replace(/\s/g, '').length;
+            wordCountEl.textContent = count;
+        }
+
+        // 格式化文本
+        function formatText(format) {
+            const selection = window.getSelection();
+            
+            switch(format) {
+                case 'bold':
+                    document.execCommand('bold', false, null);
+                    break;
+                case 'italic':
+                    document.execCommand('italic', false, null);
+                    break;
+                case 'heading':
+                    document.execCommand('formatBlock', false, '<h2>');
+                    break;
+                case 'quote':
+                    document.execCommand('formatBlock', false, '<blockquote>');
+                    break;
+                case 'list':
+                    document.execCommand('insertUnorderedList', false, null);
+                    break;
+                case 'link':
+                    const url = prompt('请输入链接地址：');
+                    if (url) {
+                        document.execCommand('createLink', false, url);
+                    }
+                    break;
+                case 'image':
+                    const imgUrl = prompt('请输入图片地址：');
+                    if (imgUrl) {
+                        document.execCommand('insertImage', false, imgUrl);
+                    }
+                    break;
+            }
+            editor.focus();
+        }
+
+        // 保存草稿
+        function saveDraft() {
+            const title = titleInput.value.trim();
+            const content = editor.innerHTML;
+            const category = document.getElementById('category').value;
+            const tag = document.getElementById('tag').value;
+            
+            if (!title) {
+                alert('请输入文章标题');
+                return;
+            }
+
+            const draft = { title, content, category, tag, saveTime: new Date().toLocaleString() };
+            localStorage.setItem('articleDraft', JSON.stringify(draft));
+            
+            alert('草稿已保存');
+        }
+
+        // 发布文章
+        function publishArticle() {
+            const title = titleInput.value.trim();
+            const content = editor.innerText.trim();
+            const category = document.getElementById('category').value;
+            
+            if (!title) {
+                alert('请输入文章标题');
+                titleInput.focus();
+                return;
+            }
+            
+            if (!content) {
+                alert('请输入文章内容');
+                editor.focus();
+                return;
+            }
+            
+            if (!category) {
+                alert('请选择文章分类');
+                return;
+            }
+
+            if (confirm('确定要发布这篇文章吗？')) {
+                alert('文章发布成功！');
+                localStorage.removeItem('articleDraft');
+                window.location.href = 'articles.html';
+            }
+        }
+
+        // 加载草稿
+        window.addEventListener('load', function() {
+            const draft = localStorage.getItem('articleDraft');
+            if (draft) {
+                const data = JSON.parse(draft);
+                titleInput.value = data.title || '';
+                editor.innerHTML = data.content || '';
+                document.getElementById('category').value = data.category || '';
+                document.getElementById('tag').value = data.tag || '';
+                updateWordCount();
+                
+                if (confirm('发现未发布的草稿，是否加载？')) {
+                    return;
+                } else {
+                    localStorage.removeItem('articleDraft');
+                    titleInput.value = '';
+                    editor.innerHTML = '';
+                    document.getElementById('category').value = '';
+                    document.getElementById('tag').value = '';
+                }
+            }
+        });
+
+        // Ctrl+S 保存
+        document.addEventListener('keydown', function(e) {
+            if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+                e.preventDefault();
+                saveDraft();
+            }
+        });
+    </script>
+</body>
+</html>
