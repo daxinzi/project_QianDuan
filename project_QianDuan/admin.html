@@ -840,15 +840,55 @@
     <div class="toast" id="toast"></div>
 
     <script>
-        // 模拟数据
-        const users = [
-            { id: 1, name: '林间风声', email: 'lin@example.com', avatar: '林', articles: 12, status: 'normal', date: '2024-01-15' },
-            { id: 2, name: '墨染流年', email: 'mo@example.com', avatar: '墨', articles: 8, status: 'normal', date: '2024-02-20' },
-            { id: 3, name: '静水流深', email: 'jing@example.com', avatar: '静', articles: 23, status: 'normal', date: '2024-01-08' },
-            { id: 4, name: '时光笔记', email: 'shi@example.com', avatar: '时', articles: 5, status: 'warning', date: '2024-03-01' },
-            { id: 5, name: '秋水文章', email: 'qiu@example.com', avatar: '秋', articles: 0, status: 'danger', date: '2024-03-10' },
-        ];
+        // 用户管理函数
+        function getUsers() {
+            const users = localStorage.getItem('users');
+            return users ? JSON.parse(users) : [];
+        }
 
+        function saveUsers(users) {
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        function addUser(user) {
+            const users = getUsers();
+            users.push(user);
+            saveUsers(users);
+        }
+
+        function updateUser(id, data) {
+            const users = getUsers();
+            const index = users.findIndex(u => u.id === id);
+            if (index !== -1) {
+                users[index] = { ...users[index], ...data };
+                saveUsers(users);
+            }
+        }
+
+        function deleteUser(id) {
+            const users = getUsers();
+            const filtered = users.filter(u => u.id !== id);
+            saveUsers(filtered);
+        }
+
+        // 初始化默认用户数据
+        function initDefaultUsers() {
+            const users = getUsers();
+            if (users.length === 0) {
+                const defaultUsers = [
+                    { id: 1, username: '林间风声', email: 'lin@example.com', password: '123456', avatar: '林', articles: 12, status: 'normal', date: '2024-01-15' },
+                    { id: 2, username: '墨染流年', email: 'mo@example.com', password: '123456', avatar: '墨', articles: 8, status: 'normal', date: '2024-02-20' },
+                    { id: 3, username: '静水流深', email: 'jing@example.com', password: '123456', avatar: '静', articles: 23, status: 'normal', date: '2024-01-08' },
+                    { id: 4, username: '时光笔记', email: 'shi@example.com', password: '123456', avatar: '时', articles: 5, status: 'warning', date: '2024-03-01' },
+                    { id: 5, username: '秋水文章', email: 'qiu@example.com', password: '123456', avatar: '秋', articles: 0, status: 'danger', date: '2024-03-10' },
+                ];
+                saveUsers(defaultUsers);
+            }
+        }
+
+        initDefaultUsers();
+
+        // 模拟文章数据
         const articles = [
             { id: 1, title: '写作是一场与自己的对话', author: '林间风声', views: 2340, status: 'published', date: '2小时前' },
             { id: 2, title: '如何写出有画面感的文字', author: '墨染流年', views: 1876, status: 'published', date: '昨天' },
@@ -857,17 +897,49 @@
             { id: 5, title: '写给初学写作的人', author: '林间风声', views: 5678, status: 'published', date: '2周前' },
         ];
 
+        // 弹窗控制
+        let modalMode = '';
+        let editingUserId = null;
+
+        function showModal(title, content) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-body').innerHTML = content;
+            document.getElementById('modal-overlay').classList.add('show');
+        }
+
+        function hideModal() {
+            document.getElementById('modal-overlay').classList.remove('show');
+            modalMode = '';
+            editingUserId = null;
+        }
+
+        document.getElementById('modal-close').addEventListener('click', hideModal);
+        document.getElementById('modal-cancel').addEventListener('click', hideModal);
+        document.getElementById('modal-overlay').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('modal-overlay')) hideModal();
+        });
+
+        function showToast(message, type = '') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = 'toast ' + type;
+            setTimeout(() => toast.classList.add('show'), 10);
+            setTimeout(() => toast.classList.remove('show'), 3000);
+        }
+
         const pageData = {
             dashboard: {
                 title: '控制台',
-                render: () => `
+                render: () => {
+                    const users = getUsers();
+                    return `
                     <div class="stats-grid">
                         <div class="stat-card">
                             <div class="stat-icon users">
                                 <svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
                             </div>
                             <div class="stat-info">
-                                <h3>1,234</h3>
+                                <h3>${users.length}</h3>
                                 <p>注册用户</p>
                             </div>
                         </div>
@@ -876,7 +948,7 @@
                                 <svg viewBox="0 0 24 24"><path d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29z"/></svg>
                             </div>
                             <div class="stat-info">
-                                <h3>567</h3>
+                                <h3>${articles.length}</h3>
                                 <p>文章总数</p>
                             </div>
                         </div>
@@ -946,7 +1018,7 @@
                             </div>
                         </div>
                     </div>
-                `
+                `}
             },
             articles: {
                 title: '文章管理',
@@ -993,21 +1065,16 @@
                             </tbody>
                         </table>
                         <div class="pagination">
-                            <div class="pagination-info">共 56 条记录，第 1/6 页</div>
-                            <div class="pagination-btns">
-                                <button class="page-btn">上一页</button>
-                                <button class="page-btn active">1</button>
-                                <button class="page-btn">2</button>
-                                <button class="page-btn">3</button>
-                                <button class="page-btn">下一页</button>
-                            </div>
+                            <div class="pagination-info">共 ${articles.length} 条记录</div>
                         </div>
                     </div>
                 `
             },
             users: {
                 title: '用户管理',
-                render: () => `
+                render: () => {
+                    const users = getUsers();
+                    return `
                     <div class="data-card">
                         <div class="data-card-header">
                             <h3 class="data-card-title">用户列表</h3>
@@ -1037,18 +1104,21 @@
                                             <div class="table-user">
                                                 <div class="table-user-avatar">${u.avatar}</div>
                                                 <div class="table-user-info">
-                                                    <h4>${u.name}</h4>
+                                                    <h4>${u.username}</h4>
                                                     <p>${u.email}</p>
                                                 </div>
                                             </div>
                                         </td>
                                         <td>${u.articles}</td>
-                                        <td><span class="status-badge ${u.status}">${u.status === 'normal' ? '正常' : u.status === 'warning' ? '警告' : '异常'}</span></td>
+                                        <td><span class="status-badge ${u.status}">${u.status === 'normal' ? '正常' : u.status === 'warning' ? '警告' : u.status === 'disabled' ? '禁用' : '异常'}</span></td>
                                         <td>${u.date}</td>
                                         <td>
                                             <div class="action-btns">
-                                                <button class="action-btn edit" title="编辑"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button>
-                                                <button class="action-btn delete" title="删除"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
+                                                <button class="action-btn edit" data-id="${u.id}" title="编辑"><svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z"/></svg></button>
+                                                <button class="action-btn ${u.status === 'disabled' ? '' : 'delete'}" data-id="${u.id}" title="${u.status === 'disabled' ? '启用' : '禁用'}">
+                                                    <svg viewBox="0 0 24 24"><path d="${u.status === 'disabled' ? 'M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z' : 'M12 7c2.76 0 5 2.24 5 5 0 .65-.13 1.26-.36 1.83l2.92 2.92c1.51-1.26 2.7-2.89 3.43-4.75-1.73-4.39-6-7.5-11-7.5-1.4 0-2.74.25-3.98.7l2.16 2.16C10.74 7.13 11.35 7 12 7zM2 4.27l2.28 2.28.46.46C3.08 8.3 1.78 10.02 1 12c1.73 4.39 6 7.5 11 7.5 1.55 0 3.03-.3 4.38-.84l.42.42L19.73 22 21 20.73 3.27 3 2 4.27z'}"/></svg>
+                                                </button>
+                                                <button class="action-btn delete" data-id="${u.id}" title="删除"><svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg></button>
                                             </div>
                                         </td>
                                     </tr>
@@ -1056,17 +1126,11 @@
                             </tbody>
                         </table>
                         <div class="pagination">
-                            <div class="pagination-info">共 1234 条记录，第 1/62 页</div>
-                            <div class="pagination-btns">
-                                <button class="page-btn">上一页</button>
-                                <button class="page-btn active">1</button>
-                                <button class="page-btn">2</button>
-                                <button class="page-btn">3</button>
-                                <button class="page-btn">下一页</button>
-                            </div>
+                            <div class="pagination-info">共 ${users.length} 条记录</div>
                         </div>
                     </div>
-                `
+                `;
+                }
             },
             comments: {
                 title: '评论管理',
@@ -1190,6 +1254,8 @@
             }
         };
 
+        };
+
         // 页面切换
         function switchPage(page) {
             document.querySelectorAll('.menu-item').forEach(item => {
@@ -1199,6 +1265,147 @@
             const data = pageData[page];
             document.getElementById('page-title').textContent = data.title;
             document.getElementById('content').innerHTML = data.render();
+            
+            // 绑定用户管理事件
+            if (page === 'users') {
+                bindUserEvents();
+            }
+        }
+
+        // 用户管理事件绑定
+        function bindUserEvents() {
+            // 添加用户
+            document.getElementById('add-user-btn')?.addEventListener('click', () => {
+                modalMode = 'add';
+                showModal('添加用户', `
+                    <div class="form-group">
+                        <label class="form-label">用户名</label>
+                        <input type="text" class="form-input" id="user-username" placeholder="请输入用户名">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">邮箱</label>
+                        <input type="email" class="form-input" id="user-email" placeholder="请输入邮箱">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">密码</label>
+                        <input type="password" class="form-input" id="user-password" placeholder="请输入密码">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">状态</label>
+                        <select class="form-select" id="user-status">
+                            <option value="normal">正常</option>
+                            <option value="warning">警告</option>
+                            <option value="disabled">禁用</option>
+                        </select>
+                    </div>
+                `);
+            });
+
+            // 编辑/禁用/删除用户
+            document.querySelectorAll('.action-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const id = parseInt(btn.dataset.id);
+                    if (!id) return;
+
+                    if (btn.classList.contains('edit')) {
+                        // 编辑用户
+                        const users = getUsers();
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            modalMode = 'edit';
+                            editingUserId = id;
+                            showModal('编辑用户', `
+                                <div class="form-group">
+                                    <label class="form-label">用户名</label>
+                                    <input type="text" class="form-input" id="user-username" value="${user.username}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">邮箱</label>
+                                    <input type="email" class="form-input" id="user-email" value="${user.email}">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">新密码（留空不修改）</label>
+                                    <input type="password" class="form-input" id="user-password" placeholder="请输入新密码">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label">状态</label>
+                                    <select class="form-select" id="user-status">
+                                        <option value="normal" ${user.status === 'normal' ? 'selected' : ''}>正常</option>
+                                        <option value="warning" ${user.status === 'warning' ? 'selected' : ''}>警告</option>
+                                        <option value="disabled" ${user.status === 'disabled' ? 'selected' : ''}>禁用</option>
+                                    </select>
+                                </div>
+                            `);
+                        }
+                    } else if (btn.classList.contains('delete')) {
+                        // 删除用户
+                        if (confirm('确定要删除该用户吗？')) {
+                            deleteUser(id);
+                            showToast('用户已删除', 'success');
+                            switchPage('users');
+                        }
+                    } else {
+                        // 启用/禁用用户
+                        const users = getUsers();
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            const newStatus = user.status === 'disabled' ? 'normal' : 'disabled';
+                            updateUser(id, { status: newStatus });
+                            showToast(newStatus === 'disabled' ? '用户已禁用' : '用户已启用', 'success');
+                            switchPage('users');
+                        }
+                    }
+                });
+            });
+
+            // 弹窗确认按钮
+            document.getElementById('modal-confirm').onclick = () => {
+                const username = document.getElementById('user-username')?.value;
+                const email = document.getElementById('user-email')?.value;
+                const password = document.getElementById('user-password')?.value;
+                const status = document.getElementById('user-status')?.value;
+
+                if (!username || !email) {
+                    showToast('请填写完整信息', 'error');
+                    return;
+                }
+
+                if (modalMode === 'add') {
+                    const users = getUsers();
+                    if (users.some(u => u.email === email)) {
+                        showToast('该邮箱已被注册', 'error');
+                        return;
+                    }
+                    
+                    const newUser = {
+                        id: Date.now(),
+                        username: username,
+                        email: email,
+                        password: password || '123456',
+                        avatar: username.charAt(0).toUpperCase(),
+                        articles: 0,
+                        status: status,
+                        date: new Date().toISOString().split('T')[0]
+                    };
+                    addUser(newUser);
+                    showToast('用户添加成功', 'success');
+                } else if (modalMode === 'edit' && editingUserId) {
+                    const updateData = {
+                        username: username,
+                        email: email,
+                        status: status
+                    };
+                    if (password) {
+                        updateData.password = password;
+                    }
+                    updateUser(editingUserId, updateData);
+                    showToast('用户更新成功', 'success');
+                }
+
+                hideModal();
+                switchPage('users');
+            };
         }
 
         // 菜单点击
@@ -1210,14 +1417,6 @@
 
         // 初始化
         switchPage('dashboard');
-
-        function showToast(message, type = '') {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.className = 'toast ' + type;
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
     </script>
 </body>
 </html>
