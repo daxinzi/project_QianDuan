@@ -115,10 +115,11 @@ app.get('/api/users', async (req, res) => {
 app.put('/api/users/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const { username, email, password, status } = req.body;
+    const { username, email, password, status, role } = req.body;
     
     const updateData = { username, email, status };
     if (password) updateData.password = password;
+    if (role) updateData.role = role;
 
     const user = await User.findByIdAndUpdate(id, updateData, { new: true });
     res.json({ message: '更新成功', user });
