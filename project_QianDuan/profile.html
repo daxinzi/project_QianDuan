@@ -583,6 +583,154 @@
                 gap: 8px;
                 padding: 8px;
             }
+            .sidebar-profile-card {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: center;
+                justify-content: center;
+                gap: 16px;
+                padding: 16px;
+            }
+            .sidebar-avatar {
+                width: 60px;
+                height: 60px;
+                font-size: 22px;
+                margin: 0;
+            }
+            .sidebar-name {
+                font-size: 16px;
+                margin-bottom: 0;
+            }
+            .sidebar-email {
+                width: 100%;
+                margin-bottom: 0;
+            }
+            .sidebar-stats {
+                width: 100%;
+                padding-top: 12px;
+                border-top: 1px solid var(--border-color);
+            }
+            .menu-item {
+                flex-shrink: 0;
+                padding: 10px 16px;
+                border-left: none;
+                border-radius: 8px;
+            }
+            .menu-item.active {
+                background: var(--secondary-color);
+            }
+            .menu-item.active span {
+                color: white;
+            }
+            .menu-item.active svg {
+                fill: white;
+            }
+            .menu-divider { display: none; }
+            .profile-header { padding: 24px; }
+            .profile-header-inner {
+                flex-direction: column;
+                text-align: center;
+            }
+            .profile-stats { gap: 24px; }
+            .stat-value { font-size: 20px; }
+        }
+            .sidebar { width: 100%; }
+        .sidebar-profile-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .sidebar-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 28px;
+            font-weight: 600;
+            margin: 0 auto 12px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(139, 115, 85, 0.3);
+        }
+
+        .sidebar-avatar .avatar-edit {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 28px;
+            height: 28px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .sidebar-avatar .avatar-edit:hover {
+            transform: scale(1.1);
+        }
+
+        .sidebar-avatar .avatar-edit svg {
+            width: 14px;
+            height: 14px;
+            fill: var(--text-secondary);
+        }
+
+        .sidebar-name {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-email {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 16px;
+        }
+
+        .sidebar-stats {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-top: 16px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .sidebar-stats .stat-item {
+            text-align: center;
+        }
+
+        .sidebar-stats .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .sidebar-stats .stat-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 2px;
+        }
+
+        .sidebar-menu {
+                position: static;
+                display: flex;
+                overflow-x: auto;
+                gap: 8px;
+                padding: 8px;
+            }
             .menu-item {
                 flex-shrink: 0;
                 padding: 10px 16px;
@@ -626,6 +774,29 @@
 
     <main class="main">
         <aside class="sidebar">
+            <div class="sidebar-profile-card">
+                <div class="sidebar-avatar" id="profile-avatar">
+                    <div class="avatar-edit" id="edit-avatar">
+                        <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
+                    </div>
+                </div>
+                <h3 class="sidebar-name" id="profile-name">_writer</h3>
+                <p class="sidebar-email" id="profile-email">user@example.com</p>
+                <div class="sidebar-stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-articles">12</div>
+                        <div class="stat-label">文章</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-followers">128</div>
+                        <div class="stat-label">粉丝</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-likes">856</div>
+                        <div class="stat-label">获赞</div>
+                    </div>
+                </div>
+            </div>
             <div class="sidebar-menu">
                 <div class="menu-item active" data-tab="profile">
                     <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
@@ -657,36 +828,6 @@
         </aside>
 
         <div class="content">
-            <div class="profile-header">
-                <div class="profile-header-inner">
-                    <div class="profile-avatar-wrapper">
-                        <div class="profile-avatar" id="profile-avatar">
-                            <div class="avatar-edit" id="edit-avatar">
-                                <svg viewBox="0 0 24 24"><path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/></svg>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="profile-info">
-                        <h1 class="profile-name" id="profile-name">_writer</h1>
-                        <p class="profile-email" id="profile-email">user@example.com</p>
-                        <div class="profile-stats">
-                            <div class="stat-item">
-                                <div class="stat-value" id="stat-articles">12</div>
-                                <div class="stat-label">文章</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="stat-followers">128</div>
-                                <div class="stat-label">粉丝</div>
-                            </div>
-                            <div class="stat-item">
-                                <div class="stat-value" id="stat-likes">856</div>
-                                <div class="stat-label">获赞</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <div class="settings-section" id="settings-profile">
                 <h2 class="section-title">个人资料</h2>
                 <div class="settings-list">
