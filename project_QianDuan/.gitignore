@@ -3,3 +3,7 @@ index.css
 
 #忽略test目录下所有的文件
 test/
+
+# Node.js
+node_modules/
+package-lock.json
