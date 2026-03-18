@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>文章 - 写作空间</title>
+    <title>全站热文 - 写作空间</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
@@ -207,6 +207,25 @@
             color: var(--text-secondary);
         }
 
+        .hot-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-left: 12px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
         .filter-bar {
             display: flex;
             gap: 12px;
@@ -231,172 +250,153 @@
             color: white;
         }
 
-        .article-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-            gap: 24px;
+        .article-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
         }
 
         .article-card {
             background: var(--card-bg);
             border-radius: 16px;
-            overflow: hidden;
+            padding: 24px;
             box-shadow: var(--shadow);
             transition: var(--transition);
             cursor: pointer;
+            display: flex;
+            gap: 20px;
         }
 
         .article-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 32px rgba(139, 115, 85, 0.15);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
         }
 
-        .article-cover {
-            width: 100%;
-            height: 180px;
-            background: linear-gradient(135deg, var(--secondary-color), var(--accent-color));
+        .article-rank {
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
+            min-width: 60px;
+            font-family: 'Noto Serif SC', serif;
         }
 
-        .article-cover svg {
-            width: 48px;
-            height: 48px;
-            fill: rgba(255, 255, 255, 0.7);
+        .rank-number {
+            font-size: 32px;
+            font-weight: 700;
+            line-height: 1;
         }
 
-        .article-body {
-            padding: 20px;
+        .rank-number.top1 { color: #e74c3c; }
+        .rank-number.top2 { color: #e67e22; }
+        .rank-number.top3 { color: #f39c12; }
+        .rank-number.other { color: var(--text-secondary); }
+
+        .rank-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        .article-content {
+            flex: 1;
         }
 
         .article-tags {
             display: flex;
             gap: 8px;
             margin-bottom: 12px;
+            flex-wrap: wrap;
         }
 
         .article-tag {
             padding: 4px 10px;
             background: var(--bg-color);
-            border-radius: 12px;
-            font-size: 11px;
             color: var(--secondary-color);
+            border-radius: 12px;
+            font-size: 12px;
         }
 
         .article-title {
-            font-size: 17px;
+            font-family: 'Noto Serif SC', serif;
+            font-size: 18px;
             font-weight: 600;
             color: var(--primary-color);
             margin-bottom: 8px;
             line-height: 1.4;
+        }
+
+        .article-excerpt {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 16px;
             display: -webkit-box;
             -webkit-line-clamp: 2;
             -webkit-box-orient: vertical;
             overflow: hidden;
         }
 
-        .article-excerpt {
-            font-size: 13px;
-            color: var(--text-secondary);
-            line-height: 1.6;
-            margin-bottom: 16px;
-            display: -webkit-box;
-            -webkit-line-clamp: 3;
-            -webkit-box-orient: vertical;
-            overflow: hidden;
-        }
-
         .article-meta {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            padding-top: 16px;
-            border-top: 1px solid var(--border-color);
+            justify-content: space-between;
         }
 
         .article-meta-info {
             display: flex;
+            align-items: center;
             gap: 16px;
-            font-size: 12px;
-            color: var(--text-secondary);
         }
 
         .article-meta-item {
             display: flex;
             align-items: center;
             gap: 4px;
+            font-size: 13px;
+            color: var(--text-secondary);
         }
 
         .article-meta-item svg {
-            width: 14px;
-            height: 14px;
+            width: 16px;
+            height: 16px;
+            fill: currentColor;
         }
 
         .article-actions {
             display: flex;
-            gap: 8px;
+            align-items: center;
+            gap: 12px;
         }
 
         .article-action-btn {
-            width: 32px;
-            height: 32px;
-            border: none;
-            background: var(--bg-color);
-            border-radius: 8px;
-            cursor: pointer;
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 4px;
+            padding: 6px 12px;
+            background: var(--bg-color);
+            border: none;
+            border-radius: 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            cursor: pointer;
             transition: var(--transition);
         }
 
         .article-action-btn:hover {
-            background: var(--border-color);
+            background: var(--secondary-color);
+            color: white;
         }
 
         .article-action-btn svg {
             width: 16px;
             height: 16px;
-            fill: var(--text-secondary);
-        }
-
-        .article-action-btn.liked svg {
-            fill: #e74c3c;
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-            margin-top: 40px;
-        }
-
-        .page-btn {
-            min-width: 36px;
-            height: 36px;
-            padding: 0 12px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 14px;
-            color: var(--text-secondary);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .page-btn:hover, .page-btn.active {
-            background: var(--secondary-color);
-            border-color: var(--secondary-color);
-            color: white;
+            fill: currentColor;
         }
 
         .empty-state {
             text-align: center;
-            padding: 80px 20px;
+            padding: 60px 20px;
             background: var(--card-bg);
             border-radius: 16px;
             box-shadow: var(--shadow);
@@ -460,7 +460,8 @@
             .nav-logo-text { display: none; }
             .nav-menu { display: none; }
             .main { padding: 24px 16px; }
-            .article-grid { grid-template-columns: 1fr; }
+            .article-card { flex-direction: column; }
+            .article-rank { flex-direction: row; gap: 8px; margin-bottom: 12px; }
         }
     </style>
 </head>
@@ -475,8 +476,8 @@
             </a>
             <div class="nav-menu">
                 <a href="index.html" class="nav-item">首页</a>
-                <a href="articles.html" class="nav-item active">文章</a>
-                <a href="hot.html" class="nav-item">全站热文</a>
+                <a href="articles.html" class="nav-item">文章</a>
+                <a href="hot.html" class="nav-item active">全站热文</a>
                 <a href="create.html" class="nav-item">创作</a>
                 <a href="collections.html" class="nav-item">收藏</a>
             </div>
@@ -505,21 +506,18 @@
 
     <main class="main">
         <div class="page-header">
-            <h1 class="page-title">全部文章</h1>
-            <p class="page-subtitle">浏览创作的每一篇文字</p>
+            <h1 class="page-title">全站热文 <span class="hot-badge"><svg viewBox="0 0 24 24" fill="currentColor" width="14" height="14"><path d="M13.5.67s.74 2.65.74 4.8c0 2.06-1.35 3.73-3.41 3.73-2.07 0-3.63-1.67-3.63-3.73l.03-.36C5.21 7.51 4 10.62 4 14c0 4.42 3.58 8 8 8s8-3.58 8-8C20 8.61 17.41 3.8 13.5.67zM11.71 19c-1.78 0-3.22-1.4-3.22-3.14 0-1.62 1.05-2.76 2.81-3.12 1.77-.36 3.6-1.21 4.62-2.58.39 1.29.59 2.65.59 4.04 0 2.65-2.15 4.8-4.8 4.8z"/></svg>热门</span></h1>
+            <p class="page-subtitle">根据阅读量和点赞数排序的热门文章</p>
         </div>
 
         <div class="filter-bar">
             <button class="filter-btn active" data-filter="all">全部</button>
-            <button class="filter-btn" data-filter="published">已发布</button>
-            <button class="filter-btn" data-filter="draft">草稿</button>
-            <button class="filter-btn" data-filter="private">私密</button>
+            <button class="filter-btn" data-filter="week">本周</button>
+            <button class="filter-btn" data-filter="month">本月</button>
+            <button class="filter-btn" data-filter="alltime">全部</button>
         </div>
 
-        <div class="article-grid" id="article-grid">
-        </div>
-
-        <div class="pagination" id="pagination">
+        <div class="article-list" id="article-list">
         </div>
     </main>
 
@@ -533,120 +531,126 @@
         const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
         document.getElementById('user-avatar').textContent = userInfo.username ? userInfo.username.charAt(0).toUpperCase() : 'U';
 
-        // 模拟文章数据
-        const articles = [
-            { id: 1, title: '关于写作的一些思考', excerpt: '写作是一种表达思想的方式，也是与自己对话的过程。本文探讨了如何通过写作来提升思维能力...', status: 'published', date: '2小时前', views: 1200, likes: 45, tags: ['随笔', '思考'] },
-            { id: 2, title: '写作技巧分享：如何写出吸引人的开头', excerpt: '开头是文章的门面，一个好的开头能够吸引读者继续往下读。本文分享几种有效的写作开头技巧...', status: 'published', date: '昨天', views: 856, likes: 32, tags: ['技巧', '教程'] },
-            { id: 3, title: '草稿：散文两则', excerpt: '（草稿未完成）', status: 'draft', date: '3天前', views: 0, likes: 0, tags: ['散文', '草稿'] },
-            { id: 4, title: '读书笔记：《活着》读后感', excerpt: '余华的《活着》讲述了一个普通人一生的故事，通过福贵的经历，我们看到了生命的坚韧与脆弱...', status: 'published', date: '1周前', views: 2340, likes: 89, tags: ['读书笔记', '文学'] },
-            { id: 5, title: '我的2024年写作计划', excerpt: '新的一年到了，给自己制定一个写作计划。希望能在这一年里完成更多优质的文章...', status: 'private', date: '2周前', views: 0, likes: 0, tags: ['计划', '随笔'] },
-            { id: 6, title: '如何培养写作习惯', excerpt: '写作需要坚持，需要养成习惯。本文分享一些培养写作习惯的小技巧，帮助你更好地坚持写作...', status: 'published', date: '3周前', views: 1567, likes: 67, tags: ['习惯', '方法'] },
-        ];
+        const API_BASE = 'http://localhost:3001/api';
 
-        let currentFilter = 'all';
-        let currentPage = 1;
-        const pageSize = 6;
-
-        function renderArticles() {
-            const grid = document.getElementById('article-grid');
-            const filtered = currentFilter === 'all' ? articles : articles.filter(a => a.status === currentFilter);
-            const start = (currentPage - 1) * pageSize;
-            const paginated = filtered.slice(start, start + pageSize);
-
-            grid.innerHTML = paginated.map(article => `
-                <div class="article-card" data-id="${article.id}">
-                    <div class="article-cover">
-                        <svg viewBox="0 0 24 24"><path d="M14.06 9.02l.92.92L5.92 19H5v-.92l9.06-9.06M17.66 3c-.25 0-.51.1-.7.29l-1.83 1.83 3.75 3.75 1.83-1.83c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.2-.2-.45-.29-.71-.29zm-3.6 3.19L3 17.25V21h3.75L17.81 9.94l-3.75-3.75z"/></svg>
-                    </div>
-                    <div class="article-body">
-                        <div class="article-tags">
-                            ${article.tags.map(tag => `<span class="article-tag">${tag}</span>`).join('')}
-                        </div>
-                        <h3 class="article-title">${article.title}</h3>
-                        <p class="article-excerpt">${article.excerpt}</p>
-                        <div class="article-meta">
-                            <div class="article-meta-info">
-                                <span class="article-meta-item">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
-                                    ${article.date}
-                                </span>
-                                <span class="article-meta-item">
-                                    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                                    ${article.views}
-                                </span>
-                            </div>
-                            <div class="article-actions">
-                                <button class="article-action-btn like-btn" data-id="${article.id}">
-                                    <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-
-            // 渲染分页
-            const totalPages = Math.ceil(filtered.length / pageSize);
-            const pagination = document.getElementById('pagination');
-            let pageHtml = '';
-            for (let i = 1; i <= totalPages; i++) {
-                pageHtml += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        async function fetchHotArticles() {
+            try {
+                const response = await fetch(`${API_BASE}/articles`);
+                const articles = await response.json();
+                return articles.sort((a, b) => (b.views || 0) - (a.views || 0));
+            } catch (error) {
+                console.error('获取热文失败:', error);
+                return getLocalHotArticles();
             }
-            pagination.innerHTML = pageHtml;
-
-            // 分页点击
-            pagination.querySelectorAll('.page-btn').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    currentPage = parseInt(btn.dataset.page);
-                    renderArticles();
-                });
-            });
         }
 
-        // 筛选
+        function getLocalHotArticles() {
+            return [
+                { id: 1, title: '写作是一场与自己的对话', excerpt: '写作是一种表达思想的方式，也是与自己对话的过程。本文探讨了如何通过写作来提升思维能力...', author: '林间风声', views: 2340, likes: 89, date: '2小时前', tags: ['随笔', '思考'] },
+                { id: 2, title: '如何写出有画面感的文字', excerpt: '文字的画面感是写作中非常重要的技巧，本文分享几种有效的方法...', author: '墨染流年', views: 1876, likes: 67, date: '昨天', tags: ['技巧', '教程'] },
+                { id: 3, title: '阅读带给我的改变', excerpt: '阅读是写作的基础，让我分享一些阅读的心得体会...', author: '静水流深', views: 3456, likes: 123, date: '3天前', tags: ['阅读', '分享'] },
+                { id: 4, title: '写给初学写作的人', excerpt: '写作并不可怕，可怕的是不敢开始。本文给初学者一些建议...', author: '林间风声', views: 5678, likes: 234, date: '2周前', tags: ['随笔', '建议'] },
+                { id: 5, title: '我的读书方法论', excerpt: '如何高效阅读一本书，并从中获取写作的养分...', author: '时光笔记', views: 1234, likes: 45, date: '1周前', tags: ['方法', '阅读'] },
+                { id: 6, title: '培养写作习惯的五个技巧', excerpt: '坚持写作需要方法，分享我是如何养成写作习惯的...', author: '墨染流年', views: 987, likes: 34, date: '5天前', tags: ['习惯', '方法'] },
+                { id: 7, title: '写作中的情感表达', excerpt: '如何让文字更有感染力，触动读者的心...', author: '静水流深', views: 1567, likes: 78, date: '4天前', tags: ['技巧', '情感'] },
+                { id: 8, title: '关于写作的一些思考', excerpt: '写作是一种生活方式，也是一种自我提升的方式...', author: '林间风声', views: 2100, likes: 92, date: '昨天', tags: ['随笔', '思考'] },
+            ];
+        }
+
+        let currentFilter = 'all';
+        let articles = [];
+
+        async function renderArticles() {
+            const list = document.getElementById('article-list');
+            
+            if (articles.length === 0) {
+                articles = await fetchHotArticles();
+            }
+
+            let filtered = articles;
+            if (currentFilter !== 'all') {
+                filtered = articles.slice(0, 5);
+            }
+
+            if (filtered.length === 0) {
+                list.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-icon">
+                            <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/></svg>
+                        </div>
+                        <h3 class="empty-title">暂无热文</h3>
+                        <p class="empty-desc">快去创作热门文章吧！</p>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = filtered.map((article, index) => {
+                const rankClass = index < 3 ? `top${index + 1}` : 'other';
+                return `
+                    <div class="article-card" data-id="${article._id || article.id}">
+                        <div class="article-rank">
+                            <span class="rank-number ${rankClass}">${index + 1}</span>
+                            <span class="rank-label">${index < 3 ? '热榜' : '阅读'}</span>
+                        </div>
+                        <div class="article-content">
+                            <div class="article-tags">
+                                ${(article.tags || article.category || []).map(tag => `<span class="article-tag">${tag}</span>`).join('')}
+                            </div>
+                            <h3 class="article-title">${article.title || '无标题'}</h3>
+                            <p class="article-excerpt">${article.excerpt || article.content?.substring(0, 100) || '暂无简介'}</p>
+                            <div class="article-meta">
+                                <div class="article-meta-info">
+                                    <span class="article-meta-item">
+                                        <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                                        ${article.author || '匿名'}
+                                    </span>
+                                    <span class="article-meta-item">
+                                        <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                                        ${article.date || '未知'}
+                                    </span>
+                                    <span class="article-meta-item">
+                                        <svg viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
+                                        ${article.views || 0}
+                                    </span>
+                                </div>
+                                <div class="article-actions">
+                                    <button class="article-action-btn like-btn" data-id="${article._id || article.id}">
+                                        <svg viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                                        ${article.likes || 0}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
                 currentFilter = btn.dataset.filter;
-                currentPage = 1;
                 renderArticles();
             });
         });
 
-        // 点赞
+        document.getElementById('user-avatar').addEventListener('click', () => {
+            document.getElementById('user-dropdown').classList.toggle('show');
+        });
+
         document.addEventListener('click', (e) => {
-            const likeBtn = e.target.closest('.like-btn');
-            if (likeBtn) {
-                likeBtn.classList.toggle('liked');
-                showToast(likeBtn.classList.contains('liked') ? '已点赞' : '取消点赞');
+            if (!e.target.closest('.user-menu')) {
+                document.getElementById('user-dropdown').classList.remove('show');
             }
         });
 
-        // 用户菜单
-        const userAvatar = document.getElementById('user-avatar');
-        const userDropdown = document.getElementById('user-dropdown');
-        userAvatar.addEventListener('click', () => userDropdown.classList.toggle('show'));
-        document.addEventListener('click', (e) => {
-            if (!userAvatar.contains(e.target) && !userDropdown.contains(e.target)) {
-                userDropdown.classList.remove('show');
-            }
-        });
-
-        // 退出登录
         document.getElementById('logout-btn').addEventListener('click', () => {
             localStorage.removeItem('isLoggedIn');
             localStorage.removeItem('userInfo');
-            showToast('已退出登录');
-            setTimeout(() => window.location.href = 'login.html', 1000);
+            window.location.href = 'login.html';
         });
-
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            setTimeout(() => toast.classList.add('show'), 10);
-            setTimeout(() => toast.classList.remove('show'), 3000);
-        }
 
         renderArticles();
     </script>
