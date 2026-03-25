@@ -14,11 +14,16 @@
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </div>
-      <div class="album-cover" :class="{ playing: isPlaying }">
-        <img :src="currentSong.cover || defaultCover" alt="Album Cover" />
+      <div class="album-cover" :class="{ playing: isPlaying }" @click="toggleLyricMode">
+        <img v-if="!showLyric" :src="currentSong.cover || defaultCover" alt="Album Cover" />
+        <div v-else class="lyric-display">
+          <p v-for="(line, index) in currentLyric" :key="index" :class="{ active: index === lyricIndex }">
+            {{ line }}
+          </p>
+        </div>
       </div>
       <div class="song-info">
-        <h2 class="song-title">{{ currentSong.title || '搜索歌曲开始播放' }}</h2>
+        <h2 class="song-title" :title="currentSong.title">{{ currentSong.title || '搜索歌曲开始播放' }}</h2>
         <p class="song-artist">{{ currentSong.artist || '' }}</p>
       </div>
       <div class="progress-section">
@@ -61,7 +66,7 @@
         >
           <span class="song-index">{{ (currentPage - 1) * pageSize + index + 1 }}</span>
           <div class="song-details">
-            <span class="song-name">{{ song.title }}</span>
+            <span class="song-name" :title="song.title">{{ song.title }}</span>
             <span class="song-singer">{{ song.artist }}</span>
           </div>
           <span class="song-duration">{{ song.duration || '--:--' }}</span>
@@ -97,6 +102,9 @@ const loading = ref(false)
 const currentPage = ref(1)
 const pageSize = 6
 const totalCount = ref(0)
+const showLyric = ref(false)
+const currentLyric = ref([])
+const lyricIndex = ref(0)
 
 const defaultCover = 'https://p2.music.126.net/TQmF--wD4zQC_aGZ-ZLD0g==/109951166952713766.jpg'
 
@@ -123,6 +131,9 @@ const initAudio = () => {
   
   audio.addEventListener('timeupdate', () => {
     currentTime.value = audio.currentTime
+    if (showLyric.value) {
+      updateLyric()
+    }
   })
   
   audio.addEventListener('loadedmetadata', () => {
@@ -197,6 +208,21 @@ const playSongById = (id) => {
   const index = songs.value.findIndex(song => song.id === id)
   if (index !== -1) {
     playSong(index)
+  }
+}
+
+const toggleLyricMode = () => {
+  showLyric.value = !showLyric.value
+}
+
+const updateLyric = () => {
+  if (currentLyric.value.length === 0) return
+  const time = currentTime.value
+  for (let i = currentLyric.value.length - 1; i >= 0; i--) {
+    if (time >= i * 3) {
+      lyricIndex.value = i
+      break
+    }
   }
 }
 
@@ -383,6 +409,7 @@ onUnmounted(() => {
   overflow: hidden;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
   transition: transform 0.3s ease;
+  cursor: pointer;
 }
 
 .album-cover.playing {
@@ -398,6 +425,33 @@ onUnmounted(() => {
   width: 100%;
   height: 100%;
   object-fit: cover;
+}
+
+.lyric-display {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  overflow: hidden;
+  padding: 20px;
+  text-align: center;
+}
+
+.lyric-display p {
+  margin: 0;
+  font-size: 14px;
+  color: #888;
+  line-height: 2;
+  transition: all 0.3s;
+}
+
+.lyric-display p.active {
+  color: #ff6b6b;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .song-info {
@@ -589,6 +643,10 @@ onUnmounted(() => {
 .song-singer {
   font-size: 12px;
   color: #888;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100px;
 }
 
 .song-duration {
