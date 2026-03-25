@@ -226,6 +226,45 @@ const updateLyric = () => {
   }
 }
 
+const fetchLyric = async (hash) => {
+  if (!hash) {
+    currentLyric.value = ['暂无歌词']
+    return
+  }
+  
+  try {
+    const response = await fetch(`/api/music/lrc?hash=${hash}`)
+    const res = await response.json()
+    
+    if (res.data && res.data.lyric) {
+      const lyricText = res.data.lyric
+      currentLyric.value = parseLyric(lyricText)
+    } else {
+      currentLyric.value = ['暂无歌词']
+    }
+  } catch (error) {
+    console.error('获取歌词失败:', error)
+    currentLyric.value = ['暂无歌词']
+  }
+}
+
+const parseLyric = (lrcText) => {
+  const lines = lrcText.split('\n')
+  const result = []
+  
+  for (const line of lines) {
+    const match = line.match(/\[.*?\](.*)/)
+    if (match) {
+      const text = match[1].trim()
+      if (text) {
+        result.push(text)
+      }
+    }
+  }
+  
+  return result.length > 0 ? result : ['暂无歌词']
+}
+
 const playSong = async (index) => {
   if (songs.value.length === 0) return
   
@@ -240,6 +279,7 @@ const playSong = async (index) => {
       const playUrl = `/api/music/play?url=${encodeURIComponent(res.data.play_url)}`
       const cover = res.data.cover || song.cover
       const duration = res.data.duration || song.duration
+      const hash = res.data.hash ? res.data.hash['flac'] || res.data.hash['320'] || res.data.hash['128'] : ''
       
       audio.src = playUrl
       song.src = playUrl
@@ -248,6 +288,9 @@ const playSong = async (index) => {
       
       await audio.play()
       isPlaying.value = true
+      
+      fetchLyric(hash)
+      lyricIndex.value = 0
     } else {
       console.error('获取播放链接失败')
     }

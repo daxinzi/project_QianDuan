@@ -7,6 +7,7 @@ CORS(app)
 
 API_KEY = 'KXl4O1ifFEknBEUNa0E'
 API_BASE = 'https://api.yaohud.cn/api/music/kg'
+LRC_API = 'https://api.yaohud.cn/api/music/lrc'
 
 @app.route('/api/music/search', methods=['GET'])
 def search_music():
@@ -35,7 +36,7 @@ def search_music():
 def get_playlist():
     try:
         keyword = request.args.get('msg', '')
-        g = request.args.get('g', '12')
+        g = request.args.get('g', '20')
         quality = request.args.get('quality', 'flac')
         
         params = {
@@ -65,6 +66,22 @@ def get_song():
         }
         
         response = requests.get(API_BASE, params=params, timeout=10)
+        return jsonify(response.json())
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/music/lrc', methods=['GET'])
+def get_lrc():
+    try:
+        hash_val = request.args.get('hash', '')
+        
+        params = {
+            'key': API_KEY,
+            'mid': hash_val,
+            'type': 'kg'
+        }
+        
+        response = requests.get(LRC_API, params=params, timeout=10)
         return jsonify(response.json())
     except Exception as e:
         return jsonify({'error': str(e)}), 500
