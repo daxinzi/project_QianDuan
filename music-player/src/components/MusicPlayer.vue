@@ -1,5 +1,17 @@
 <template>
   <div class="music-player">
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="搜索歌曲或歌手..." 
+        class="search-input"
+      />
+      <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
     <div class="player-main">
       <div class="album-cover" :class="{ playing: isPlaying }">
         <img :src="currentSong.cover" alt="Album Cover" />
@@ -35,15 +47,15 @@
       </div>
     </div>
     <div class="playlist">
-      <h3>播放列表</h3>
-      <ul>
+      <h3>{{ searchQuery ? '搜索结果' : '播放列表' }}</h3>
+      <ul v-if="filteredSongs.length > 0">
         <li 
-          v-for="(song, index) in songs" 
+          v-for="(song, index) in filteredSongs" 
           :key="song.id"
-          :class="{ active: index === currentIndex }"
-          @click="playSong(index)"
+          :class="{ active: song.id === currentSong.id }"
+          @click="playSongById(song.id)"
         >
-          <span class="song-index">{{ index + 1 }}</span>
+          <span class="song-index">{{ filteredSongs.indexOf(song) + 1 }}</span>
           <div class="song-details">
             <span class="song-name">{{ song.title }}</span>
             <span class="song-singer">{{ song.artist }}</span>
@@ -51,6 +63,9 @@
           <span class="song-duration">{{ song.duration }}</span>
         </li>
       </ul>
+      <div v-else class="no-results">
+        <p>未找到相关音乐</p>
+      </div>
     </div>
   </div>
 </template>
@@ -106,10 +121,22 @@ const isPlaying = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const volume = ref(70)
+const searchQuery = ref('')
 
 let audio = null
 
 const currentSong = computed(() => songs.value[currentIndex.value])
+
+const filteredSongs = computed(() => {
+  if (!searchQuery.value.trim()) {
+    return songs.value
+  }
+  const query = searchQuery.value.toLowerCase().trim()
+  return songs.value.filter(song => 
+    song.title.toLowerCase().includes(query) || 
+    song.artist.toLowerCase().includes(query)
+  )
+})
 
 const progress = computed(() => {
   if (duration.value === 0) return 0
@@ -147,6 +174,13 @@ const playSong = (index) => {
   audio.src = currentSong.value.src
   audio.play()
   isPlaying.value = true
+}
+
+const playSongById = (id) => {
+  const index = songs.value.findIndex(song => song.id === id)
+  if (index !== -1) {
+    playSong(index)
+  }
 }
 
 const prevSong = () => {
@@ -207,6 +241,69 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+}
+
+.search-box {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 10px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  color: #888;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 44px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 25px;
+  color: #fff;
+  font-size: 14px;
+  outline: none;
+  transition: all 0.3s ease;
+}
+
+.search-input::placeholder {
+  color: #888;
+}
+
+.search-input:focus {
+  background: rgba(255, 255, 255, 0.15);
+  border-color: rgba(255, 107, 107, 0.5);
+  box-shadow: 0 0 20px rgba(255, 107, 107, 0.2);
+}
+
+.clear-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #888;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.clear-btn:hover {
+  color: #ff6b6b;
+}
+
+.clear-btn svg {
+  width: 18px;
+  height: 18px;
 }
 
 .album-cover {
@@ -422,6 +519,17 @@ onUnmounted(() => {
 .song-duration {
   font-size: 12px;
   color: #666;
+}
+
+.no-results {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+}
+
+.no-results p {
+  margin: 0;
+  font-size: 14px;
 }
 
 @media (max-width: 768px) {
