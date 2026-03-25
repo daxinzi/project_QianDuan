@@ -226,14 +226,18 @@ const updateLyric = () => {
   }
 }
 
-const fetchLyric = async (hash) => {
-  if (!hash) {
+const fetchLyric = async (hash, songName) => {
+  if (!hash && !songName) {
     currentLyric.value = ['暂无歌词']
     return
   }
   
   try {
-    const response = await fetch(`/api/music/lrc?hash=${hash}`)
+    const params = new URLSearchParams()
+    if (hash) params.append('hash', hash)
+    if (songName) params.append('song', songName)
+    
+    const response = await fetch(`/api/music/lrc?${params.toString()}`)
     const res = await response.json()
     
     if (res.data && res.data.lyric) {
@@ -289,7 +293,7 @@ const playSong = async (index) => {
       await audio.play()
       isPlaying.value = true
       
-      fetchLyric(hash)
+      fetchLyric(hash, song.title)
       lyricIndex.value = 0
     } else {
       console.error('获取播放链接失败')

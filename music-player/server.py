@@ -74,15 +74,52 @@ def get_song():
 def get_lrc():
     try:
         hash_val = request.args.get('hash', '')
+        song_name = request.args.get('song', '')
         
-        params = {
-            'key': API_KEY,
-            'mid': hash_val,
-            'type': 'kg'
-        }
+        results = {}
         
-        response = requests.get(LRC_API, params=params, timeout=10)
-        return jsonify(response.json())
+        if hash_val:
+            kg_params = {
+                'key': API_KEY,
+                'mid': hash_val,
+                'type': 'kg'
+            }
+            kg_response = requests.get(LRC_API, params=kg_params, timeout=10)
+            kg_data = kg_response.json()
+            if kg_data.get('data', {}).get('lyric'):
+                results['kg'] = kg_data['data']['lyric']
+        
+        if song_name:
+            wy_params = {
+                'key': API_KEY,
+                'mid': song_name,
+                'type': 'wy'
+            }
+            try:
+                wy_response = requests.get(LRC_API, params=wy_params, timeout=5)
+                wy_data = wy_response.json()
+                if wy_data.get('data', {}).get('lyric'):
+                    results['wy'] = wy_data['data']['lyric']
+            except:
+                pass
+            
+            qq_params = {
+                'key': API_KEY,
+                'mid': song_name,
+                'type': 'qq'
+            }
+            try:
+                qq_response = requests.get(LRC_API, params=qq_params, timeout=5)
+                qq_data = qq_response.json()
+                if qq_data.get('data', {}).get('lyric'):
+                    results['qq'] = qq_data['data']['lyric']
+            except:
+                pass
+        
+        if results:
+            return jsonify({'code': 200, 'data': {'lyric': results.get('kg') or results.get('wy') or results.get('qq'), 'sources': list(results.keys())}})
+        else:
+            return jsonify({'code': 400, 'data': {'msg': '未找到歌词'}})
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
