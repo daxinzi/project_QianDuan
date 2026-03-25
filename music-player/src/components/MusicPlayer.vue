@@ -52,14 +52,14 @@
       <div v-if="loading" class="loading">
         <p>加载中...</p>
       </div>
-      <ul v-else-if="songs.length > 0">
+      <ul v-else-if="displayedSongs.length > 0">
         <li 
-          v-for="(song, index) in songs" 
+          v-for="(song, index) in displayedSongs" 
           :key="song.id || index"
-          :class="{ active: index === currentIndex }"
-          @click="playSong(index)"
+          :class="{ active: song.id === currentSong.id }"
+          @click="playSongById(song.id)"
         >
-          <span class="song-index">{{ index + 1 }}</span>
+          <span class="song-index">{{ (currentPage - 1) * pageSize + index + 1 }}</span>
           <div class="song-details">
             <span class="song-name">{{ song.title }}</span>
             <span class="song-singer">{{ song.artist }}</span>
@@ -69,6 +69,15 @@
       </ul>
       <div v-else class="no-results">
         <p>{{ searchQuery ? '未找到相关音乐，请尝试其他关键词' : '输入歌曲名称搜索音乐' }}</p>
+      </div>
+      <div v-if="totalPages > 1" class="pagination">
+        <button class="page-btn" @click="prevPage" :disabled="currentPage === 1">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z"/></svg>
+        </button>
+        <span class="page-info">{{ currentPage }} / {{ totalPages }}</span>
+        <button class="page-btn" @click="nextPage" :disabled="currentPage === totalPages">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -85,12 +94,23 @@ const currentTime = ref(0)
 const duration = ref(0)
 const volume = ref(70)
 const loading = ref(false)
+const currentPage = ref(1)
+const pageSize = 6
+const totalCount = ref(0)
 
 const defaultCover = 'https://p2.music.126.net/TQmF--wD4zQC_aGZ-ZLD0g==/109951166952713766.jpg'
 
 let audio = null
 
 const currentSong = computed(() => songs.value[currentIndex.value] || {})
+
+const totalPages = computed(() => Math.ceil(totalCount.value / pageSize) || 1)
+
+const displayedSongs = computed(() => {
+  const start = (currentPage.value - 1) * pageSize
+  const end = start + pageSize
+  return songs.value.slice(start, end)
+})
 
 const progress = computed(() => {
   if (duration.value === 0) return 0
@@ -118,8 +138,9 @@ const handleSearch = async () => {
   if (!searchQuery.value.trim()) return
   
   loading.value = true
+  currentPage.value = 1
   try {
-    const response = await fetch(`/api/music/playlist?msg=${encodeURIComponent(searchQuery.value)}&g=12&quality=flac`)
+    const response = await fetch(`/api/music/playlist?msg=${encodeURIComponent(searchQuery.value)}&g=20&quality=flac`)
     const res = await response.json()
     
     if (res.data && res.data.songs && Array.isArray(res.data.songs)) {
@@ -132,13 +153,16 @@ const handleSearch = async () => {
         src: '',
         n: item.n
       }))
+      totalCount.value = songs.value.length
       currentIndex.value = 0
     } else {
       songs.value = []
+      totalCount.value = 0
     }
   } catch (error) {
     console.error('搜索失败:', error)
     songs.value = []
+    totalCount.value = 0
   } finally {
     loading.value = false
   }
@@ -148,11 +172,32 @@ const clearSearch = () => {
   searchQuery.value = ''
   songs.value = []
   currentIndex.value = 0
+  totalCount.value = 0
+  currentPage.value = 1
   if (audio) {
     audio.pause()
     audio.currentTime = 0
   }
   isPlaying.value = false
+}
+
+const prevPage = () => {
+  if (currentPage.value > 1) {
+    currentPage.value--
+  }
+}
+
+const nextPage = () => {
+  if (currentPage.value < totalPages.value) {
+    currentPage.value++
+  }
+}
+
+const playSongById = (id) => {
+  const index = songs.value.findIndex(song => song.id === id)
+  if (index !== -1) {
+    playSong(index)
+  }
 }
 
 const playSong = async (index) => {
@@ -256,7 +301,7 @@ onUnmounted(() => {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  max-width: 900px;
+  max-width: 1100px;
   margin: 0 auto;
 }
 
@@ -560,6 +605,50 @@ onUnmounted(() => {
 .no-results p, .loading p {
   margin: 0;
   font-size: 14px;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.page-btn {
+  background: rgba(255, 255, 255, 0.1);
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.page-btn:hover:not(:disabled) {
+  background: rgba(255, 107, 107, 0.3);
+}
+
+.page-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.page-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.page-info {
+  font-size: 14px;
+  color: #aaa;
+  min-width: 50px;
+  text-align: center;
 }
 
 @media (max-width: 768px) {
