@@ -161,25 +161,27 @@ const playSong = async (index) => {
   currentIndex.value = index
   const song = songs.value[index]
   
-  if (!song.src) {
-    try {
-      const response = await fetch(`/api/music/song?msg=${encodeURIComponent(song.title)}&n=${song.n || 1}&quality=flac`)
-      const res = await response.json()
+  try {
+    const response = await fetch(`/api/music/song?msg=${encodeURIComponent(song.title)}&n=${song.n || 1}&quality=flac`)
+    const res = await response.json()
+    
+    if (res.data && res.data.play_url) {
+      const playUrl = res.data.play_url
+      const cover = res.data.cover || song.cover
+      const duration = res.data.duration || song.duration
       
-      if (res.data && res.data.play_url) {
-        song.src = res.data.play_url
-        song.cover = res.data.cover || song.cover
-        song.duration = res.data.duration ? formatTime(res.data.duration) : song.duration
-      }
-    } catch (error) {
-      console.error('获取歌曲详情失败:', error)
+      audio.src = playUrl
+      song.src = playUrl
+      song.cover = cover
+      song.duration = duration
+      
+      await audio.play()
+      isPlaying.value = true
+    } else {
+      console.error('获取播放链接失败')
     }
-  }
-  
-  if (song.src) {
-    audio.src = song.src
-    audio.play()
-    isPlaying.value = true
+  } catch (error) {
+    console.error('播放失败:', error)
   }
 }
 
