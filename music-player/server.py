@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, Response
 import requests
 from flask_cors import CORS
 
@@ -66,6 +66,31 @@ def get_song():
         
         response = requests.get(API_BASE, params=params, timeout=10)
         return jsonify(response.json())
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/music/play', methods=['GET'])
+def play_music():
+    try:
+        url = request.args.get('url', '')
+        if not url:
+            return jsonify({'error': 'URL is required'}), 400
+        
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Referer': 'https://www.kugou.com/'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=30, stream=True)
+        
+        return Response(
+            response.iter_content(chunk_size=1024*1024),
+            headers={
+                'Content-Type': 'audio/mpeg',
+                'Content-Length': response.headers.get('content-length', ''),
+                'Accept-Ranges': 'bytes'
+            }
+        )
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 

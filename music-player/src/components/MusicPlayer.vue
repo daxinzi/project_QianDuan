@@ -166,7 +166,7 @@ const playSong = async (index) => {
     const res = await response.json()
     
     if (res.data && res.data.play_url) {
-      const playUrl = res.data.play_url
+      const playUrl = `/api/music/play?url=${encodeURIComponent(res.data.play_url)}`
       const cover = res.data.cover || song.cover
       const duration = res.data.duration || song.duration
       
