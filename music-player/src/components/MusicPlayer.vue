@@ -120,17 +120,17 @@ const handleSearch = async () => {
   loading.value = true
   try {
     const response = await fetch(`/api/music/playlist?msg=${encodeURIComponent(searchQuery.value)}&g=12&quality=flac`)
-    const data = await response.json()
+    const res = await response.json()
     
-    if (data.data && Array.isArray(data.data)) {
-      songs.value = data.data.map((item, index) => ({
-        id: item.id || index,
-        title: item.name || item.songname || '未知歌曲',
-        artist: item.singer || item.author || '未知歌手',
-        duration: item.time || '--:--',
-        cover: item.pic || defaultCover,
+    if (res.data && res.data.songs && Array.isArray(res.data.songs)) {
+      songs.value = res.data.songs.map((item, index) => ({
+        id: index,
+        title: item.name || '未知歌曲',
+        artist: item.singer || '未知歌手',
+        duration: item.duration || '--:--',
+        cover: item.cover || defaultCover,
         src: '',
-        songmid: item.songmid || item.mid
+        n: item.n
       }))
       currentIndex.value = 0
     } else {
@@ -161,16 +161,15 @@ const playSong = async (index) => {
   currentIndex.value = index
   const song = songs.value[index]
   
-  if (!song.src && song.songmid) {
+  if (!song.src) {
     try {
-      const response = await fetch(`/api/music/song?msg=${encodeURIComponent(song.title)}&n=1&quality=flac`)
-      const data = await response.json()
+      const response = await fetch(`/api/music/song?msg=${encodeURIComponent(song.title)}&n=${song.n || 1}&quality=flac`)
+      const res = await response.json()
       
-      if (data.data && data.data[0]) {
-        const songData = data.data[0]
-        song.src = songData.url || ''
-        song.cover = songData.pic || song.cover
-        song.duration = songData.time || song.duration
+      if (res.data && res.data.play_url) {
+        song.src = res.data.play_url
+        song.cover = res.data.cover || song.cover
+        song.duration = res.data.duration ? formatTime(res.data.duration) : song.duration
       }
     } catch (error) {
       console.error('获取歌曲详情失败:', error)
