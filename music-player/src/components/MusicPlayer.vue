@@ -8,17 +8,18 @@
           v-model="searchQuery" 
           placeholder="搜索歌曲或歌手..." 
           class="search-input"
+          @keyup.enter="handleSearch"
         />
-        <button v-if="searchQuery" class="clear-btn" @click="searchQuery = ''">
+        <button v-if="searchQuery" class="clear-btn" @click="clearSearch">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
         </button>
       </div>
       <div class="album-cover" :class="{ playing: isPlaying }">
-        <img :src="currentSong.cover" alt="Album Cover" />
+        <img :src="currentSong.cover || defaultCover" alt="Album Cover" />
       </div>
       <div class="song-info">
-        <h2 class="song-title">{{ currentSong.title }}</h2>
-        <p class="song-artist">{{ currentSong.artist }}</p>
+        <h2 class="song-title">{{ currentSong.title || '搜索歌曲开始播放' }}</h2>
+        <p class="song-artist">{{ currentSong.artist || '' }}</p>
       </div>
       <div class="progress-section">
         <div class="progress-bar" @click="seek">
@@ -33,11 +34,11 @@
         <button class="btn-prev" @click="prevSong">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
         </button>
-        <button class="btn-play" @click="togglePlay">
+        <button class="btn-play" @click="togglePlay" :disabled="!currentSong.src">
           <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
           <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
         </button>
-        <button class="btn-next" @click="nextSong">
+        <button class="btn-next" @click="nextSong" :disabled="songs.length === 0">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-12v12l6.5-6L8 6zm8 0v12h2V6h-2z"/></svg>
         </button>
       </div>
@@ -48,95 +49,48 @@
     </div>
     <div class="playlist">
       <h3>{{ searchQuery ? '搜索结果' : '播放列表' }}</h3>
-      <ul v-if="filteredSongs.length > 0">
+      <div v-if="loading" class="loading">
+        <p>加载中...</p>
+      </div>
+      <ul v-else-if="songs.length > 0">
         <li 
-          v-for="(song, index) in filteredSongs" 
-          :key="song.id"
-          :class="{ active: song.id === currentSong.id }"
-          @click="playSongById(song.id)"
+          v-for="(song, index) in songs" 
+          :key="song.id || index"
+          :class="{ active: index === currentIndex }"
+          @click="playSong(index)"
         >
-          <span class="song-index">{{ filteredSongs.indexOf(song) + 1 }}</span>
+          <span class="song-index">{{ index + 1 }}</span>
           <div class="song-details">
             <span class="song-name">{{ song.title }}</span>
             <span class="song-singer">{{ song.artist }}</span>
           </div>
-          <span class="song-duration">{{ song.duration }}</span>
+          <span class="song-duration">{{ song.duration || '--:--' }}</span>
         </li>
       </ul>
       <div v-else class="no-results">
-        <p>未找到相关音乐</p>
+        <p>{{ searchQuery ? '未找到相关音乐，请尝试其他关键词' : '输入歌曲名称搜索音乐' }}</p>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 
-const songs = ref([
-  {
-    id: 1,
-    title: '光年之外',
-    artist: '邓紫棋',
-    duration: '03:55',
-    cover: 'https://p2.music.126.net/TQmF--wD4zQC_aGZ-ZLD0g==/109951166952713766.jpg',
-    src: 'https://music.163.com/song/media/outer/url?id=462378761.mp3'
-  },
-  {
-    id: 2,
-    title: '演员',
-    artist: '薛之谦',
-    duration: '04:21',
-    cover: 'https://p2.music.126.net/AGq1m83cFR7JfOB3B7Glow==/18806129305310480.jpg',
-    src: 'https://music.163.com/song/media/outer/url?id=33123306.mp3'
-  },
-  {
-    id: 3,
-    title: '起风了',
-    artist: '买辣椒也用券',
-    duration: '04:33',
-    cover: 'https://p2.music.126.net/siH6-v_1l3J7bZ7VEHH0lw==/109951163495882537.jpg',
-    src: 'https://music.163.com/song/media/outer/url?id=1345976016.mp3'
-  },
-  {
-    id: 4,
-    title: '稻香',
-    artist: '周杰伦',
-    duration: '03:43',
-    cover: 'https://p2.music.126.net/E512IQ_5D万物皆可-owjI-A==/3399246873918681.jpg',
-    src: 'https://music.163.com/song/media/outer/url?id=1868532235.mp3'
-  },
-  {
-    id: 5,
-    title: '晴天',
-    artist: '周杰伦',
-    duration: '04:29',
-    cover: 'https://p2.music.126.net/E512IQ_5D万物皆可-owjI-A==/3399246873918681.jpg',
-    src: 'https://music.163.com/song/media/outer/url?id=1868532241.mp3'
-  }
-])
-
+const searchQuery = ref('')
+const songs = ref([])
 const currentIndex = ref(0)
 const isPlaying = ref(false)
 const currentTime = ref(0)
 const duration = ref(0)
 const volume = ref(70)
-const searchQuery = ref('')
+const loading = ref(false)
+
+const defaultCover = 'https://p2.music.126.net/TQmF--wD4zQC_aGZ-ZLD0g==/109951166952713766.jpg'
 
 let audio = null
 
-const currentSong = computed(() => songs.value[currentIndex.value])
-
-const filteredSongs = computed(() => {
-  if (!searchQuery.value.trim()) {
-    return songs.value
-  }
-  const query = searchQuery.value.toLowerCase().trim()
-  return songs.value.filter(song => 
-    song.title.toLowerCase().includes(query) || 
-    song.artist.toLowerCase().includes(query)
-  )
-})
+const currentSong = computed(() => songs.value[currentIndex.value] || {})
 
 const progress = computed(() => {
   if (duration.value === 0) return 0
@@ -144,7 +98,7 @@ const progress = computed(() => {
 })
 
 const initAudio = () => {
-  audio = new Audio(currentSong.value.src)
+  audio = new Audio()
   audio.volume = volume.value / 100
   
   audio.addEventListener('timeupdate', () => {
@@ -160,7 +114,82 @@ const initAudio = () => {
   })
 }
 
+const handleSearch = async () => {
+  if (!searchQuery.value.trim()) return
+  
+  loading.value = true
+  try {
+    const response = await fetch(`/api/music/playlist?msg=${encodeURIComponent(searchQuery.value)}&g=12&quality=flac`)
+    const data = await response.json()
+    
+    if (data.data && Array.isArray(data.data)) {
+      songs.value = data.data.map((item, index) => ({
+        id: item.id || index,
+        title: item.name || item.songname || '未知歌曲',
+        artist: item.singer || item.author || '未知歌手',
+        duration: item.time || '--:--',
+        cover: item.pic || defaultCover,
+        src: '',
+        songmid: item.songmid || item.mid
+      }))
+      currentIndex.value = 0
+    } else {
+      songs.value = []
+    }
+  } catch (error) {
+    console.error('搜索失败:', error)
+    songs.value = []
+  } finally {
+    loading.value = false
+  }
+}
+
+const clearSearch = () => {
+  searchQuery.value = ''
+  songs.value = []
+  currentIndex.value = 0
+  if (audio) {
+    audio.pause()
+    audio.currentTime = 0
+  }
+  isPlaying.value = false
+}
+
+const playSong = async (index) => {
+  if (songs.value.length === 0) return
+  
+  currentIndex.value = index
+  const song = songs.value[index]
+  
+  if (!song.src && song.songmid) {
+    try {
+      const response = await fetch(`/api/music/song?msg=${encodeURIComponent(song.title)}&n=1&quality=flac`)
+      const data = await response.json()
+      
+      if (data.data && data.data[0]) {
+        const songData = data.data[0]
+        song.src = songData.url || ''
+        song.cover = songData.pic || song.cover
+        song.duration = songData.time || song.duration
+      }
+    } catch (error) {
+      console.error('获取歌曲详情失败:', error)
+    }
+  }
+  
+  if (song.src) {
+    audio.src = song.src
+    audio.play()
+    isPlaying.value = true
+  }
+}
+
 const togglePlay = () => {
+  if (!currentSong.value.src && songs.value.length > 0) {
+    playSong(currentIndex.value)
+    return
+  }
+  
   if (isPlaying.value) {
     audio.pause()
   } else {
@@ -169,40 +198,29 @@ const togglePlay = () => {
   isPlaying.value = !isPlaying.value
 }
 
-const playSong = (index) => {
-  currentIndex.value = index
-  audio.src = currentSong.value.src
-  audio.play()
-  isPlaying.value = true
-}
-
-const playSongById = (id) => {
-  const index = songs.value.findIndex(song => song.id === id)
-  if (index !== -1) {
-    playSong(index)
-  }
-}
-
 const prevSong = () => {
+  if (songs.value.length === 0) return
   currentIndex.value = (currentIndex.value - 1 + songs.value.length) % songs.value.length
-  audio.src = currentSong.value.src
-  if (isPlaying.value) audio.play()
+  playSong(currentIndex.value)
 }
 
 const nextSong = () => {
+  if (songs.value.length === 0) return
   currentIndex.value = (currentIndex.value + 1) % songs.value.length
-  audio.src = currentSong.value.src
-  if (isPlaying.value) audio.play()
+  playSong(currentIndex.value)
 }
 
 const seek = (e) => {
+  if (!audio.src) return
   const rect = e.target.getBoundingClientRect()
   const percent = (e.clientX - rect.left) / rect.width
   audio.currentTime = percent * duration.value
 }
 
 const setVolume = () => {
-  audio.volume = volume.value / 100
+  if (audio) {
+    audio.volume = volume.value / 100
+  }
 }
 
 const formatTime = (time) => {
@@ -210,6 +228,12 @@ const formatTime = (time) => {
   const seconds = Math.floor(time % 60)
   return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
+
+watch(volume, (newVal) => {
+  if (audio) {
+    audio.volume = newVal / 100
+  }
+})
 
 onMounted(() => {
   initAudio()
@@ -390,7 +414,12 @@ onUnmounted(() => {
   padding: 0;
 }
 
-.controls button:hover {
+.controls button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.controls button:hover:not(:disabled) {
   transform: scale(1.1);
   color: #ff6b6b;
 }
@@ -410,7 +439,7 @@ onUnmounted(() => {
   justify-content: center;
 }
 
-.btn-play:hover {
+.btn-play:hover:not(:disabled) {
   transform: scale(1.1);
   color: #fff !important;
 }
@@ -521,13 +550,13 @@ onUnmounted(() => {
   color: #666;
 }
 
-.no-results {
+.no-results, .loading {
   text-align: center;
   padding: 40px 20px;
   color: #666;
 }
 
-.no-results p {
+.no-results p, .loading p {
   margin: 0;
   font-size: 14px;
 }

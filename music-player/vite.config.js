@@ -4,6 +4,12 @@ import vue from '@vitejs/plugin-vue'
 export default defineConfig({
   plugins: [vue()],
   server: {
-    allowedHosts: ['.monkeycode-ai.online']
+    allowedHosts: ['.monkeycode-ai.online'],
+    proxy: {
+      '/api/music': {
+        target: 'http://localhost:3001',
+        changeOrigin: true
+      }
+    }
   }
 })
