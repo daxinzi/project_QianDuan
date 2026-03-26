@@ -114,7 +114,7 @@ const showLyric = ref(false)
 const currentLyric = ref([])
 const lyricIndex = ref(0)
 
-const defaultCover = 'https://p2.music.126.net/TQmF--wD4zQC_aGZ-ZLD0g==/109951166952713766.jpg'
+const defaultCover = 'https://picsum.photos/seed/music/300/300'
 
 let audio = null
 
