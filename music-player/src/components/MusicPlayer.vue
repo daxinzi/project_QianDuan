@@ -374,7 +374,7 @@ onUnmounted(() => {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  max-width: 1100px;
+  max-width: 1300px;
   margin: 0 auto;
 }
 
@@ -490,7 +490,7 @@ onUnmounted(() => {
 .lyric-display p {
   margin: 0;
   font-size: 14px;
-  color: #888;
+  color: #aaa;
   line-height: 2;
   transition: all 0.3s;
 }
@@ -514,7 +514,7 @@ onUnmounted(() => {
 
 .song-artist {
   font-size: 16px;
-  color: #aaa;
+  color: #ccc;
   margin: 0;
 }
 
@@ -543,7 +543,7 @@ onUnmounted(() => {
   justify-content: space-between;
   margin-top: 8px;
   font-size: 12px;
-  color: #888;
+  color: #aaa;
 }
 
 .controls {
@@ -626,7 +626,7 @@ onUnmounted(() => {
 }
 
 .playlist {
-  width: 280px;
+  width: 380px;
   background: rgba(255, 255, 255, 0.05);
   border-radius: 16px;
   padding: 24px;
@@ -665,7 +665,7 @@ onUnmounted(() => {
 .song-index {
   width: 24px;
   font-size: 14px;
-  color: #666;
+  color: #bbb;
 }
 
 .playlist li.active .song-index {
@@ -689,22 +689,22 @@ onUnmounted(() => {
 
 .song-singer {
   font-size: 12px;
-  color: #888;
+  color: #aaa;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 100px;
+  max-width: 120px;
 }
 
 .song-duration {
   font-size: 12px;
-  color: #666;
+  color: #bbb;
 }
 
 .no-results, .loading {
   text-align: center;
   padding: 40px 20px;
-  color: #666;
+  color: #aaa;
 }
 
 .no-results p, .loading p {
@@ -751,7 +751,7 @@ onUnmounted(() => {
 
 .page-info {
   font-size: 14px;
-  color: #aaa;
+  color: #ccc;
   min-width: 50px;
   text-align: center;
 }
