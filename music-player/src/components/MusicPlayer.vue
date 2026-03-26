@@ -510,6 +510,7 @@ onUnmounted(() => {
   font-size: 24px;
   margin: 0 0 8px 0;
   font-weight: 600;
+  color: #fff;
 }
 
 .song-artist {
