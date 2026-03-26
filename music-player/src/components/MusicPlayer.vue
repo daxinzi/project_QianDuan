@@ -662,8 +662,15 @@ onUnmounted(() => {
   list-style: none;
   padding: 0;
   margin: 0;
+  overflow-x: hidden;
   overflow-y: auto;
   flex: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+.playlist ul::-webkit-scrollbar {
+  display: none;
 }
 
 .song-list li {
