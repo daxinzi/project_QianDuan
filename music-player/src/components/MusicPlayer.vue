@@ -296,9 +296,9 @@ const playSong = async (index) => {
       const hash = res.data.hash ? res.data.hash['flac'] || res.data.hash['320'] || res.data.hash['128'] : ''
       
       audio.src = playUrl
-      song.src = playUrl
-      song.cover = cover
-      song.duration = duration
+      songs.value[index].src = playUrl
+      songs.value[index].cover = cover
+      songs.value[index].duration = duration
       
       await audio.play()
       isPlaying.value = true
