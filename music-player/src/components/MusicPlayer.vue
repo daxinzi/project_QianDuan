@@ -57,19 +57,27 @@
       <div v-if="loading" class="loading">
         <p>加载中...</p>
       </div>
-      <ul v-else-if="displayedSongs.length > 0">
+      <ul v-else-if="displayedSongs.length > 0" class="song-list">
         <li 
           v-for="(song, index) in displayedSongs" 
           :key="song.id || index"
           :class="{ active: song.id === currentSong.id }"
           @click="playSongById(song.id)"
         >
-          <span class="song-index">{{ (currentPage - 1) * pageSize + index + 1 }}</span>
-          <div class="song-details">
-            <span class="song-name" :title="song.title">{{ song.title }}</span>
-            <span class="song-singer">{{ song.artist }}</span>
+          <div class="song-cover">
+            <img :src="song.cover || defaultCover" :alt="song.title" />
+            <div class="play-overlay">
+              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+            </div>
           </div>
-          <span class="song-duration">{{ song.duration || '--:--' }}</span>
+          <div class="song-info-card">
+            <div class="song-name" :title="song.title">{{ song.title }}</div>
+            <div class="song-artist" :title="song.artist">{{ song.artist }}</div>
+            <div class="song-album" :title="song.album || '未知专辑'">{{ song.album || '未知专辑' }}</div>
+          </div>
+          <div class="song-quality" v-if="song.qualities && song.qualities.length">
+            <span v-for="q in song.qualities.slice(0, 2)" :key="q" :class="'quality-' + q">{{ q }}</span>
+          </div>
         </li>
       </ul>
       <div v-else class="no-results">
@@ -160,7 +168,9 @@ const handleSearch = async () => {
         title: item.name || '未知歌曲',
         artist: item.singer || '未知歌手',
         duration: item.duration || '--:--',
+        album: item.album || '',
         cover: item.cover || defaultCover,
+        qualities: item.qualities || [],
         src: '',
         n: item.n
       }))
@@ -646,60 +656,130 @@ onUnmounted(() => {
   margin: 0;
 }
 
-.playlist li {
+.song-list li {
   display: flex;
   align-items: center;
   padding: 12px;
-  border-radius: 8px;
+  border-radius: 12px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.03);
+  margin-bottom: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
-.playlist li:hover {
+.song-list li:hover {
   background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 107, 107, 0.3);
+  transform: translateX(4px);
 }
 
-.playlist li.active {
-  background: rgba(255, 107, 107, 0.2);
+.song-list li.active {
+  background: linear-gradient(135deg, rgba(255, 107, 107, 0.2), rgba(255, 217, 61, 0.1));
+  border-color: rgba(255, 107, 107, 0.5);
 }
 
-.song-index {
+.song-cover {
+  width: 56px;
+  height: 56px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  position: relative;
+  margin-right: 14px;
+}
+
+.song-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.play-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+.song-list li:hover .play-overlay {
+  opacity: 1;
+}
+
+.play-overlay svg {
   width: 24px;
-  font-size: 14px;
-  color: #bbb;
+  height: 24px;
+  color: #fff;
 }
 
-.playlist li.active .song-index {
-  color: #ff6b6b;
-}
-
-.song-details {
+.song-info-card {
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  overflow: hidden;
 }
 
-.song-name {
+.song-info-card .song-name {
   font-size: 14px;
+  font-weight: 500;
+  color: #fff;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.song-singer {
+.song-info-card .song-artist {
   font-size: 12px;
   color: #aaa;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  max-width: 120px;
 }
 
-.song-duration {
-  font-size: 12px;
-  color: #bbb;
+.song-info-card .song-album {
+  font-size: 11px;
+  color: #777;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.song-quality {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-left: 10px;
+}
+
+.song-quality span {
+  font-size: 10px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.quality-flac {
+  background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+  color: #000;
+}
+
+.quality-320 {
+  background: rgba(255, 107, 107, 0.3);
+  color: #ff6b6b;
+}
+
+.quality-128 {
+  background: rgba(255, 255, 255, 0.1);
+  color: #888;
 }
 
 .no-results, .loading {
