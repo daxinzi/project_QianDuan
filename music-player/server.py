@@ -1,9 +1,18 @@
 from flask import Flask, request, jsonify, Response
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 import requests
 from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["7 per 15 seconds"],
+    storage_uri="memory://"
+)
 
 API_KEY = 'KXl4O1ifFEknBEUNa0E'
 API_BASE = 'https://api.yaohud.cn/api/music/kg'
