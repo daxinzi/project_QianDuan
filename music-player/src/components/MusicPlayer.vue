@@ -108,7 +108,7 @@ const duration = ref(0)
 const volume = ref(28)
 const loading = ref(false)
 const currentPage = ref(1)
-const pageSize = 6
+const pageSize = 4
 const totalCount = ref(0)
 const showLyric = ref(false)
 const currentLyric = ref([])
@@ -385,7 +385,9 @@ onUnmounted(() => {
   border-radius: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
   max-width: 1300px;
-  margin: 0 auto;
+  margin: 10px auto;
+  height: calc(100vh - 20px);
+  box-sizing: border-box;
 }
 
 .player-main {
@@ -394,6 +396,8 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 20px;
+  min-height: 0;
+  overflow: hidden;
 }
 
 .search-box {
@@ -642,29 +646,35 @@ onUnmounted(() => {
   border-radius: 16px;
   padding: 24px;
   color: #fff;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 .playlist h3 {
-  margin: 0 0 20px 0;
+  margin: 0 0 16px 0;
   font-size: 18px;
   color: #ffd93d;
+  flex-shrink: 0;
 }
 
 .playlist ul {
   list-style: none;
   padding: 0;
   margin: 0;
+  overflow-y: auto;
+  flex: 1;
 }
 
 .song-list li {
   display: flex;
   align-items: center;
-  padding: 12px;
+  padding: 10px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
   background: rgba(255, 255, 255, 0.03);
-  margin-bottom: 12px;
+  margin-bottom: 10px;
   border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -680,13 +690,13 @@ onUnmounted(() => {
 }
 
 .song-cover {
-  width: 56px;
-  height: 56px;
+  width: 48px;
+  height: 48px;
   border-radius: 8px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
-  margin-right: 14px;
+  margin-right: 12px;
 }
 
 .song-cover img {
@@ -841,15 +851,18 @@ onUnmounted(() => {
   .music-player {
     flex-direction: column;
     padding: 24px;
+    height: auto;
+    min-height: calc(100vh - 20px);
   }
   
   .playlist {
     width: 100%;
+    max-height: none;
   }
   
   .album-cover {
-    width: 200px;
-    height: 200px;
+    width: 180px;
+    height: 180px;
   }
 }
 </style>
