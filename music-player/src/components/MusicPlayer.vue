@@ -1,59 +1,21 @@
 <template>
   <div class="music-player">
-    <div class="player-main">
-      <div class="search-box">
-        <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
-        <input 
-          type="text" 
-          v-model="searchQuery" 
-          placeholder="搜索歌曲或歌手..." 
-          class="search-input"
-          @keyup.enter="handleSearch"
-        />
-        <button v-if="searchQuery" class="clear-btn" @click="clearSearch">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
-        </button>
-      </div>
-      <div class="album-cover" :class="{ playing: isPlaying }" @click="toggleLyricMode">
-        <img v-if="!showLyric" :src="currentSong.cover || defaultCover" alt="Album Cover" />
-        <div v-else class="lyric-display">
-          <p v-for="(line, index) in currentLyric" :key="index" :class="{ active: index === lyricIndex }">
-            {{ line }}
-          </p>
-        </div>
-      </div>
-      <div class="song-info">
-        <h2 class="song-title" :title="currentSong.title">{{ currentSong.title || '搜索歌曲开始播放' }}</h2>
-        <p class="song-artist">{{ currentSong.artist || '' }}</p>
-      </div>
-      <div class="progress-section">
-        <div class="progress-bar" @click="seek">
-          <div class="progress" :style="{ width: progress + '%' }"></div>
-        </div>
-        <div class="time-display">
-          <span>{{ formatTime(currentTime) }}</span>
-          <span>{{ formatTime(duration) }}</span>
-        </div>
-      </div>
-      <div class="controls">
-        <button class="btn-prev" @click="prevSong">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
-        </button>
-        <button class="btn-play" @click="togglePlay" :disabled="!currentSong.src">
-          <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-          <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
-        </button>
-        <button class="btn-next" @click="nextSong" :disabled="songs.length === 0">
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-12v12l6.5-6L8 6zm8 0v12h2V6h-2z"/></svg>
-        </button>
-      </div>
-      <div class="volume-control">
-        <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
-        <input type="range" min="0" max="100" v-model="volume" @input="setVolume" class="volume-slider" />
-      </div>
+    <div class="search-box">
+      <svg class="search-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="搜索歌曲或歌手..." 
+        class="search-input"
+        @keyup.enter="handleSearch"
+      />
+      <button v-if="searchQuery" class="clear-btn" @click="clearSearch">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
     </div>
-    <div class="playlist">
-      <h3>{{ searchQuery ? '搜索结果' : '播放列表' }}</h3>
+    
+    <div class="search-results">
+      <h3 class="results-title">{{ searchQuery ? '搜索结果' : '推荐歌曲' }}</h3>
       <div v-if="loading" class="loading">
         <p>加载中...</p>
       </div>
@@ -67,13 +29,13 @@
           <div class="song-cover">
             <img :src="song.cover || defaultCover" :alt="song.title" />
             <div class="play-overlay">
-              <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              <svg v-if="isPlaying && song.id === currentSong.id" viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+              <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             </div>
           </div>
           <div class="song-info-card">
             <div class="song-name" :title="song.title">{{ song.title }}</div>
             <div class="song-artist" :title="song.artist">{{ song.artist }}</div>
-            <div class="song-album" :title="song.album || '未知专辑'">{{ song.album || '未知专辑' }}</div>
           </div>
           <div class="song-quality" v-if="song.qualities && song.qualities.length">
             <span v-for="q in song.qualities.slice(0, 2)" :key="q" :class="'quality-' + q">{{ q }}</span>
@@ -93,6 +55,49 @@
         </button>
       </div>
     </div>
+
+    <div class="player-bar" :class="{ visible: currentSong.id !== undefined }">
+      <div class="now-playing-info" @click="toggleLyricMode">
+        <div class="mini-cover" :class="{ playing: isPlaying }">
+          <img v-if="!showLyric" :src="currentSong.cover || defaultCover" alt="Album Cover" />
+          <div v-else class="mini-lyric">
+            <p v-for="(line, index) in currentLyric.slice(0, 3)" :key="index" :class="{ active: index === lyricIndex }">
+              {{ line }}
+            </p>
+          </div>
+        </div>
+        <div class="now-playing-text">
+          <div class="now-playing-title">{{ currentSong.title || '未选择歌曲' }}</div>
+          <div class="now-playing-artist">{{ currentSong.artist || '' }}</div>
+        </div>
+      </div>
+      
+      <div class="player-controls">
+        <button class="btn-control btn-prev" @click="prevSong" :disabled="songs.length === 0">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 6h2v12H6V6zm3.5 6l8.5 6V6l-8.5 6z"/></svg>
+        </button>
+        <button class="btn-control btn-play" @click="togglePlay" :disabled="!currentSong.src && songs.length === 0">
+          <svg v-if="!isPlaying" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+          <svg v-else viewBox="0 0 24 24" fill="currentColor"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+        </button>
+        <button class="btn-control btn-next" @click="nextSong" :disabled="songs.length === 0">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 18l8.5-6L6 6v12zm2-12v12l6.5-6L8 6zm8 0v12h2V6h-2z"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-area">
+        <span class="time-current">{{ formatTime(currentTime) }}</span>
+        <div class="progress-bar" @click="seek">
+          <div class="progress" :style="{ width: progress + '%' }"></div>
+        </div>
+        <span class="time-total">{{ formatTime(duration) }}</span>
+      </div>
+
+      <div class="volume-area">
+        <svg class="volume-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/></svg>
+        <input type="range" min="0" max="100" v-model="volume" @input="setVolume" class="volume-slider" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -108,7 +113,7 @@ const duration = ref(0)
 const volume = ref(28)
 const loading = ref(false)
 const currentPage = ref(1)
-const pageSize = 4
+const pageSize = 10
 const totalCount = ref(0)
 const showLyric = ref(false)
 const currentLyric = ref([])
@@ -379,37 +384,26 @@ onUnmounted(() => {
 <style scoped>
 .music-player {
   display: flex;
-  gap: 40px;
-  padding: 40px;
+  flex-direction: column;
+  height: calc(100vh - 20px);
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
-  max-width: 1300px;
-  margin: 10px auto;
-  height: calc(100vh - 20px);
-  box-sizing: border-box;
-}
-
-.player-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 20px;
-  min-height: 0;
+  margin: 10px;
   overflow: hidden;
 }
 
 .search-box {
   position: relative;
   width: 100%;
-  max-width: 400px;
-  margin-bottom: 10px;
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 0 20px;
+  flex-shrink: 0;
 }
 
 .search-icon {
   position: absolute;
-  left: 16px;
+  left: 36px;
   top: 50%;
   transform: translateY(-50%);
   width: 20px;
@@ -419,12 +413,12 @@ onUnmounted(() => {
 
 .search-input {
   width: 100%;
-  padding: 12px 44px;
+  padding: 14px 50px;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 25px;
+  border-radius: 30px;
   color: #fff;
-  font-size: 14px;
+  font-size: 15px;
   outline: none;
   transition: all 0.3s ease;
 }
@@ -441,7 +435,7 @@ onUnmounted(() => {
 
 .clear-btn {
   position: absolute;
-  right: 12px;
+  right: 32px;
   top: 50%;
   transform: translateY(-50%);
   background: none;
@@ -463,220 +457,44 @@ onUnmounted(() => {
   height: 18px;
 }
 
-.album-cover {
-  width: 250px;
-  height: 250px;
-  border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-  transition: transform 0.3s ease;
-  cursor: pointer;
+.search-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 30px 20px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 107, 107, 0.3) transparent;
 }
 
-.album-cover.playing {
-  animation: rotate 20s linear infinite;
+.search-results::-webkit-scrollbar {
+  width: 6px;
 }
 
-@keyframes rotate {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+.search-results::-webkit-scrollbar-track {
+  background: transparent;
 }
 
-.album-cover img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.lyric-display {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-  overflow: hidden;
-  padding: 20px;
-  text-align: center;
-}
-
-.lyric-display p {
-  margin: 0;
-  font-size: 14px;
-  color: #aaa;
-  line-height: 2;
-  transition: all 0.3s;
-}
-
-.lyric-display p.active {
-  color: #ff6b6b;
-  font-size: 16px;
-  font-weight: 600;
-}
-
-.song-info {
-  text-align: center;
-  color: #fff;
-}
-
-.song-title {
-  font-size: 24px;
-  margin: 0 0 8px 0;
-  font-weight: 600;
-  color: #fff;
-}
-
-.song-artist {
-  font-size: 16px;
-  color: #ccc;
-  margin: 0;
-}
-
-.progress-section {
-  width: 100%;
-  max-width: 400px;
-}
-
-.progress-bar {
-  height: 6px;
-  background: rgba(255, 255, 255, 0.1);
+.search-results::-webkit-scrollbar-thumb {
+  background: rgba(255, 107, 107, 0.3);
   border-radius: 3px;
-  cursor: pointer;
-  overflow: hidden;
 }
 
-.progress {
-  height: 100%;
-  background: linear-gradient(90deg, #ff6b6b, #ffd93d);
-  border-radius: 3px;
-  transition: width 0.1s linear;
-}
-
-.time-display {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 8px;
-  font-size: 12px;
-  color: #aaa;
-}
-
-.controls {
-  display: flex;
-  align-items: center;
-  gap: 24px;
-}
-
-.controls button {
-  background: none;
-  border: none;
-  color: #fff;
-  cursor: pointer;
-  transition: transform 0.2s, color 0.2s;
-  padding: 0;
-}
-
-.controls button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
-}
-
-.controls button:hover:not(:disabled) {
-  transform: scale(1.1);
-  color: #ff6b6b;
-}
-
-.btn-prev svg, .btn-next svg {
-  width: 32px;
-  height: 32px;
-}
-
-.btn-play {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #ff6b6b, #ffd93d);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.btn-play:hover:not(:disabled) {
-  transform: scale(1.1);
-  color: #fff !important;
-}
-
-.btn-play svg {
-  width: 32px;
-  height: 32px;
-}
-
-.volume-control {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: #fff;
-}
-
-.volume-icon {
-  width: 24px;
-  height: 24px;
-}
-
-.volume-slider {
-  width: 100px;
-  height: 4px;
-  -webkit-appearance: none;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 2px;
-  cursor: pointer;
-}
-
-.volume-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: #ff6b6b;
-}
-
-.playlist {
-  width: 380px;
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 16px;
-  padding: 24px;
-  color: #fff;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-}
-
-.playlist h3 {
-  margin: 0 0 16px 0;
+.results-title {
+  margin: 0 0 20px 0;
   font-size: 18px;
   color: #ffd93d;
-  flex-shrink: 0;
+  font-weight: 500;
 }
 
-.playlist ul {
+.song-list {
   list-style: none;
   padding: 0;
   margin: 0;
-  overflow-x: hidden;
-  overflow-y: auto;
-  flex: 1;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.playlist ul::-webkit-scrollbar {
-  display: none;
 }
 
 .song-list li {
   display: flex;
   align-items: center;
-  padding: 10px;
+  padding: 12px;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -697,13 +515,13 @@ onUnmounted(() => {
 }
 
 .song-cover {
-  width: 48px;
-  height: 48px;
-  border-radius: 8px;
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
   overflow: hidden;
   flex-shrink: 0;
   position: relative;
-  margin-right: 12px;
+  margin-right: 14px;
 }
 
 .song-cover img {
@@ -726,13 +544,14 @@ onUnmounted(() => {
   transition: opacity 0.3s;
 }
 
-.song-list li:hover .play-overlay {
+.song-list li:hover .play-overlay,
+.song-list li.active .play-overlay {
   opacity: 1;
 }
 
 .play-overlay svg {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   color: #fff;
 }
 
@@ -741,11 +560,11 @@ onUnmounted(() => {
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 6px;
 }
 
-.song-info-card .song-name {
-  font-size: 14px;
+.song-name {
+  font-size: 15px;
   font-weight: 500;
   color: #fff;
   white-space: nowrap;
@@ -753,17 +572,9 @@ onUnmounted(() => {
   text-overflow: ellipsis;
 }
 
-.song-info-card .song-artist {
-  font-size: 12px;
+.song-artist {
+  font-size: 13px;
   color: #aaa;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.song-info-card .song-album {
-  font-size: 11px;
-  color: #777;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -773,12 +584,12 @@ onUnmounted(() => {
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-left: 10px;
+  margin-left: 12px;
 }
 
 .song-quality span {
   font-size: 10px;
-  padding: 2px 6px;
+  padding: 2px 8px;
   border-radius: 4px;
   text-align: center;
   font-weight: 600;
@@ -794,14 +605,9 @@ onUnmounted(() => {
   color: #ff6b6b;
 }
 
-.quality-128 {
-  background: rgba(255, 255, 255, 0.1);
-  color: #888;
-}
-
 .no-results, .loading {
   text-align: center;
-  padding: 40px 20px;
+  padding: 60px 20px;
   color: #aaa;
 }
 
@@ -815,8 +621,8 @@ onUnmounted(() => {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  margin-top: 20px;
-  padding-top: 16px;
+  margin-top: 24px;
+  padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -826,7 +632,7 @@ onUnmounted(() => {
   border-radius: 8px;
   color: #fff;
   cursor: pointer;
-  padding: 8px;
+  padding: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -854,22 +660,256 @@ onUnmounted(() => {
   text-align: center;
 }
 
+.player-bar {
+  flex-shrink: 0;
+  background: linear-gradient(180deg, rgba(22, 33, 62, 0.95) 0%, rgba(26, 26, 46, 0.98) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 16px 24px;
+  display: grid;
+  grid-template-columns: 1fr auto 2fr auto;
+  align-items: center;
+  gap: 24px;
+  opacity: 0;
+  transform: translateY(100%);
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.player-bar.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.now-playing-info {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  min-width: 0;
+}
+
+.mini-cover {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  overflow: hidden;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.mini-cover.playing {
+  animation: rotate 20s linear infinite;
+}
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.mini-cover img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.mini-lyric {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  padding: 6px;
+  overflow: hidden;
+}
+
+.mini-lyric p {
+  margin: 0;
+  font-size: 10px;
+  color: #777;
+  line-height: 1.5;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mini-lyric p.active {
+  color: #ff6b6b;
+  font-weight: 600;
+}
+
+.now-playing-text {
+  min-width: 0;
+}
+
+.now-playing-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.now-playing-artist {
+  font-size: 12px;
+  color: #aaa;
+  margin-top: 4px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.player-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.btn-control {
+  background: none;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.2s, color 0.2s;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-control:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-control:hover:not(:disabled) {
+  transform: scale(1.1);
+  color: #ff6b6b;
+}
+
+.btn-prev svg, .btn-next svg {
+  width: 28px;
+  height: 28px;
+}
+
+.btn-play {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ff6b6b, #ffd93d);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-play:hover:not(:disabled) {
+  transform: scale(1.1);
+  color: #fff !important;
+}
+
+.btn-play svg {
+  width: 26px;
+  height: 26px;
+}
+
+.progress-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time-current, .time-total {
+  font-size: 12px;
+  color: #aaa;
+  min-width: 40px;
+  font-variant-numeric: tabular-nums;
+}
+
+.time-current {
+  text-align: right;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 6px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
+  cursor: pointer;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: linear-gradient(90deg, #ff6b6b, #ffd93d);
+  border-radius: 3px;
+  transition: width 0.1s linear;
+}
+
+.volume-area {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 120px;
+}
+
+.volume-icon {
+  width: 20px;
+  height: 20px;
+  color: #aaa;
+  flex-shrink: 0;
+}
+
+.volume-slider {
+  flex: 1;
+  height: 4px;
+  -webkit-appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #ff6b6b;
+}
+
 @media (max-width: 768px) {
   .music-player {
-    flex-direction: column;
-    padding: 24px;
-    height: auto;
-    min-height: calc(100vh - 20px);
+    border-radius: 0;
+    margin: 0;
+    height: 100vh;
   }
   
-  .playlist {
-    width: 100%;
-    max-height: none;
+  .player-bar {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto;
+    gap: 16px;
+    padding: 16px;
   }
   
-  .album-cover {
-    width: 180px;
-    height: 180px;
+  .now-playing-info {
+    grid-column: 1;
+  }
+  
+  .player-controls {
+    grid-column: 2;
+    justify-content: flex-end;
+  }
+  
+  .progress-area {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  
+  .volume-area {
+    display: none;
+  }
+  
+  .search-results {
+    padding: 0 16px 16px;
   }
 }
 </style>

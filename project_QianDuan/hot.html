@@ -531,7 +531,7 @@
         const userInfo = JSON.parse(localStorage.getItem('userInfo') || '{}');
         document.getElementById('user-avatar').textContent = userInfo.username ? userInfo.username.charAt(0).toUpperCase() : 'U';
 
-        const API_BASE = 'http://localhost:3001/api';
+        const API_BASE = 'http://localhost:3002/api';
 
         async function fetchHotArticles() {
             try {

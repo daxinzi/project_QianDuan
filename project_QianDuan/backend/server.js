@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3002;
 
 // 中间件
 app.use(cors());
@@ -214,5 +214,5 @@ app.get('/api/stats', async (req, res) => {
 
 // 启动服务器
 app.listen(PORT, () => {
-  console.log(`服务器运行在 http://localhost:${PORT}`);
+  console.log(`写作空间后端服务运行在 http://localhost:${PORT}`);
 });
